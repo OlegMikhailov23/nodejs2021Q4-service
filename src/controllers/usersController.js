@@ -22,7 +22,10 @@ const getUser = (req, reply) => {
     id: user.id,
   }
 
-  reply.code(200).send(userWithoutPassword);
+  reply
+    .code(200)
+    .header('Content-Type', 'application/json; charset=utf-8')
+    .send(userWithoutPassword);
 }
 
 const addUser = (req, reply) => {
@@ -36,7 +39,16 @@ const addUser = (req, reply) => {
   };
   users.users = [...users.users, user];
 
-  reply.code(201).send(user);
+  const userWithoutPassword = {
+    id: user.id,
+    name: user.name,
+    login: user.login
+  }
+
+  reply
+    .code(201)
+    .header('Content-Type', 'application/json; charset=utf-8')
+    .send(userWithoutPassword);
 };
 
 const deleteUser = (req, reply) => {
@@ -46,9 +58,25 @@ const deleteUser = (req, reply) => {
   reply.send({message: `Item ${id} has been deleted`})
 }
 
+const updateUser = (req, reply) => {
+  const {id} = req.params;
+
+  const {name, login, password} = req.body
+
+  users.users = users.users.map(user => (user.id === id ? {id, name, login, password} : user))
+
+  const updatedUser = users.users.find(user => user.id === id)
+
+  reply
+    .code(200)
+    .header('Content-Type', 'application/json; charset=utf-8')
+    .send(updatedUser);
+}
+
 module.exports = {
   getUsers,
   addUser,
   getUser,
-  deleteUser
+  deleteUser,
+  updateUser
 };

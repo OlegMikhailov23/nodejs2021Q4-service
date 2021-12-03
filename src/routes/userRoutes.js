@@ -1,4 +1,4 @@
-const { getUsers, addUser, getUser, deleteUser } = require('../controllers/usersController');
+const { getUsers, addUser, getUser, deleteUser, updateUser } = require('../controllers/usersController');
 const { User } = require('../models/models');
 
 const getUsersOpts = {
@@ -17,6 +17,15 @@ const getSingleUserOpts = {
     }
   },
   handler: getUser
+};
+
+const updateUserOpts = {
+  schema: {
+    response: {
+      200: User
+    }
+  },
+  handler: updateUser
 };
 
 const postUserOpts = {
@@ -55,12 +64,14 @@ function userRoutes(app, options, done) {
   // Get single items
   app.get('/users/:id', getSingleUserOpts)
 
-
   // Add user
   app.post('/users', postUserOpts)
 
   // Delete user
   app.delete('/users/:id', deleteUserOpts)
+
+  // Delete user
+  app.put('/users/:id', updateUserOpts)
 
   done();
 }
