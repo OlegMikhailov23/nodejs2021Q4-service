@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { users } = require('../db/db');
+const { users, tasks } = require('../db/db');
 
 const getUsers = (req, reply) => {
   const usersWithoutPassword = users.users.map(user => (
@@ -61,9 +61,20 @@ const addUser = (req, reply) => {
 
 const deleteUser = (req, reply) => {
   const {id} = req.params;
-  users.users = users.users.filter(it => it.id !== id)
 
-  reply.send({message: `Item ${id} has been deleted`})
+  tasks.tasks = tasks.tasks.map(task => (task.userId === id ? {
+    id: task.id,
+    title: task.title,
+    order: task.order,
+    description: task.description,
+    userId: null,
+    boardId: task.boardId,
+    columnId: task.columnId,
+  } : task))
+
+  users.users = users.users.filter(it => it.id !== id);
+
+  reply.send({message: `Item ${id} has been deleted`});
 }
 
 const updateUser = (req, reply) => {

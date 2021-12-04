@@ -1,4 +1,4 @@
-const { getTasks, addTask } = require('../controllers/tasksController');
+const { getTasks, addTask, getTask, updateTask, deleteTask } = require('../controllers/tasksController');
 
 
 const { Task } = require('../models/models');
@@ -16,7 +16,7 @@ const postTaskOpts = {
   schema: {
     body: {
       type: 'object',
-      required: ['title', 'order', 'description', 'userId', 'boardId', 'columnId'],
+      required: ['title', 'order', 'description', 'userId', 'boardId'],
       properties: Task.properties
     }
   },
@@ -26,6 +26,38 @@ const postTaskOpts = {
   handler: addTask
 }
 
+const getSingleTaskOpts = {
+  schema: {
+    response: {
+      201: Task
+    }
+  },
+  handler: getTask
+};
+
+const updateTaskOpts = {
+  schema: {
+    response: {
+      200: Task
+    }
+  },
+  handler: updateTask
+};
+
+const deleteTaskOpts = {
+  schema: {
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          message: {type: 'string'}
+        }
+      }
+    }
+  },
+  handler: deleteTask
+}
+
 function taskRoutes(app, options, done) {
   // Get all tasks
   app.get('/boards/:boardId/tasks', getTasksOpts);
@@ -33,14 +65,14 @@ function taskRoutes(app, options, done) {
   // Post Task
   app.post('/boards/:boardId/tasks', postTaskOpts);
 
-  // // Get Board
-  // app.get('/boards/:id', getSingleBoardOpts);
-  //
-  // // Update board
-  // app.put('/boards/:id', updateBoardOpts);
-  //
-  // // Delete board
-  // app.delete('/boards/:id', deleteBoardOpts)
+  // Get single task
+  app.get('/boards/:boardId/tasks/:taskId', getSingleTaskOpts);
+
+  // Update board
+  app.put('/boards/:boardId/tasks/:taskId', updateTaskOpts);
+
+  // Delete board
+  app.delete('/boards/:boardId/tasks/:taskId', deleteTaskOpts);
 
   done();
 }

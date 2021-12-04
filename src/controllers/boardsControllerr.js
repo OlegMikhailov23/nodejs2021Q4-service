@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { boards } = require('../db/db');
+const { boards, tasks } = require('../db/db');
 
 const getBoards = (req, reply) => {
   reply.send(boards.boards);
@@ -65,6 +65,8 @@ const updateBoard = (req, reply) => {
 const deleteBoard = (req, reply) => {
   const {id} = req.params;
   boards.boards = boards.boards.filter(it => it.id !== id)
+
+  tasks.tasks = tasks.tasks.filter(it => it.boardId !== id)
 
   reply.send({message: `Board ${id} has been deleted`})
 }
