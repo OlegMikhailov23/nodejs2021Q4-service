@@ -33,7 +33,6 @@ const postUserOpts = {
     body: { // Validate User
       type: 'object',
       required: ['name', 'login', 'password'],
-
       properties: User.properties,
     },
     response: {

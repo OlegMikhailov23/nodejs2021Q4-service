@@ -2,7 +2,16 @@ const db =  [
   {
     id: 'users',
     users: [],
+  },
+  {
+    id: 'boards',
+    boards: [],
   }
 ];
 
-module.exports = db;
+const [users, boards] = db;
+
+module.exports = {
+  users,
+  boards
+};

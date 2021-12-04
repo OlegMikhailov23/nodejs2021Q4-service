@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const [users] = require('../db/db');
+const { users } = require('../db/db');
 
 const getUsers = (req, reply) => {
   const usersWithoutPassword = users.users.map(user => (
@@ -16,6 +16,14 @@ const getUsers = (req, reply) => {
 const getUser = (req, reply) => {
   const {id} = req.params;
   const user = users.users.find(it => it.id === id);
+
+  if (!user) {
+    reply
+      .code(404)
+      .header('Content-Type', 'application/json; charset=utf-8')
+      .send({message : `User ${id} does not exist`} );
+  }
+
   const userWithoutPassword = {
     name: user.name,
     login: user.login,

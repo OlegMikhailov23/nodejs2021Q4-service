@@ -10,6 +10,7 @@ app.register(require('fastify-swagger'), {
 });
 
 app.register(require('./routes/userRoutes'));
+app.register(require('./routes/boardRoutes'));
 
 
 const start = async () => {
