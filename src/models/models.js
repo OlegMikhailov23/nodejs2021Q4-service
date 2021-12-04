@@ -29,8 +29,21 @@ const Board = {
   }
 }
 
+const Task = {
+  type: 'object',
+  properties: {
+    id: {type: 'string'},
+    title: {type: 'string'},
+    order: {type: 'number'},
+    description: {type: 'string'},
+    boardId: {type: 'string'},
+    columnId: {type: 'string'},
+  }
+}
+
 module.exports = {
   User,
   Board,
-  Column
+  Column,
+  Task,
 };

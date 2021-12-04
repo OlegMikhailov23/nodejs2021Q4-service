@@ -6,12 +6,17 @@ const db =  [
   {
     id: 'boards',
     boards: [],
+  },
+  {
+    id: 'tasks',
+    tasks: [],
   }
 ];
 
-const [users, boards] = db;
+const [users, boards, tasks] = db;
 
 module.exports = {
   users,
-  boards
+  boards,
+  tasks,
 };
