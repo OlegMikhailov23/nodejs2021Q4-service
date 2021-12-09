@@ -1,13 +1,15 @@
-const { v4: uuidv4 } = require('uuid');
-const { tasks } = require('../db/db');
+import { v4 as uuidv4 } from 'uuid';
+import { tasks } from '../db/db';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { TaskReq } from '../interfaces/interfaces';
 
-const getTasks = (req, reply) => {
+export const getTasks = (req: TaskReq, reply: FastifyReply) => {
   const { boardId } = req.params;
   const currentTasks = tasks.tasks.filter(it => it.boardId === boardId);
   reply.send(currentTasks);
 };
 
-const addTask = (req, reply) => {
+export const addTask = (req: TaskReq, reply: FastifyReply) => {
   const { title, order, description, userId } = req.body;
   const { boardId } = req.params;
 
@@ -29,7 +31,7 @@ const addTask = (req, reply) => {
     .send(task);
 };
 
-const getTask = (req, reply) => {
+export const getTask = (req: TaskReq, reply: FastifyReply) => {
   const { taskId } = req.params;
 
   const task = tasks.tasks.find(it => it.id === taskId);
@@ -48,7 +50,7 @@ const getTask = (req, reply) => {
     .send(task);
 };
 
-const updateTask = (req, reply) => {
+export const updateTask = (req: TaskReq, reply: FastifyReply) => {
   const { taskId } = req.params;
 
   const { title, order, description, userId, boardId, columnId } = req.body;
@@ -70,16 +72,8 @@ const updateTask = (req, reply) => {
     .send(updatedTask);
 };
 
-const deleteTask = (req, reply) => {
+export const deleteTask = (req: TaskReq, reply: FastifyReply) => {
   const {taskId} = req.params;
   tasks.tasks = tasks.tasks.filter(it => it.id !== taskId);
   reply.send({message: `Task ${taskId} has been deleted`});
 }
-
-module.exports = {
-  getTasks,
-  addTask,
-  getTask,
-  updateTask,
-  deleteTask,
-};

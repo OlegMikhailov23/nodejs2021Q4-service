@@ -1,5 +1,6 @@
-const { getUsers, addUser, getUser, deleteUser, updateUser } = require('../controllers/usersController');
-const { User } = require('../models/models');
+import { FastifyInstance } from 'fastify';
+import { getUsers, addUser, getUser, deleteUser, updateUser } from '../controllers/usersController';
+import { User} from '../models/models'
 
 const getUsersOpts = {
   schema: {
@@ -56,11 +57,11 @@ const deleteUserOpts = {
   handler: deleteUser
 }
 
-function userRoutes(app, options, done) {
+function userRoutes(app: FastifyInstance, options: object, done: () => void) {
   // Get all users
   app.get('/users', getUsersOpts);
 
-  // Get single items
+
   app.get('/users/:id', getSingleUserOpts)
 
   // Add user
@@ -76,3 +77,4 @@ function userRoutes(app, options, done) {
 }
 
 module.exports = userRoutes;
+

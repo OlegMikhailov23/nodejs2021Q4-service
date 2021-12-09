@@ -1,11 +1,14 @@
-const { v4: uuidv4 } = require('uuid');
-const { boards, tasks } = require('../db/db');
 
-const getBoards = (req, reply) => {
+import { v4 as uuidv4 } from 'uuid';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import {boards, tasks} from '../db/db';
+import { BoardReq } from '../interfaces/interfaces';
+
+export const getBoards = (req: FastifyRequest, reply: FastifyReply) => {
   reply.send(boards.boards);
 };
 
-const addBoard = (req, reply) => {
+export const addBoard = (req: BoardReq, reply: FastifyReply) => {
   const { title, columns } = req.body;
 
   const columnsWithId = columns.map(column => (
@@ -30,7 +33,7 @@ const addBoard = (req, reply) => {
     .send(board);
 };
 
-const getBoard = (req, reply) => {
+export const getBoard = (req: BoardReq, reply: FastifyReply) => {
   const {id} = req.params;
   const board = boards.boards.find(it => it.id === id);
 
@@ -47,7 +50,7 @@ const getBoard = (req, reply) => {
     .send(board);
 }
 
-const updateBoard = (req, reply) => {
+export const updateBoard = (req: BoardReq, reply: FastifyReply) => {
   const {id} = req.params;
 
   const { title, columns } = req.body;
@@ -62,19 +65,11 @@ const updateBoard = (req, reply) => {
     .send(updatedBoard);
 }
 
-const deleteBoard = (req, reply) => {
+export const deleteBoard = (req: BoardReq, reply: FastifyReply) => {
   const {id} = req.params;
-  boards.boards = boards.boards.filter(it => it.id !== id)
+  boards.boards = boards.boards?.filter(it => it.id !== id)
 
-  tasks.tasks = tasks.tasks.filter(it => it.boardId !== id)
+  tasks.tasks = tasks.tasks?.filter(it => it.boardId !== id)
 
   reply.send({message: `Board ${id} has been deleted`})
-}
-
-module.exports = {
-  getBoards,
-  addBoard,
-  getBoard,
-  updateBoard,
-  deleteBoard
 }

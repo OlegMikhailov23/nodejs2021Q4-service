@@ -1,8 +1,10 @@
-const { v4: uuidv4 } = require('uuid');
-const { users, tasks } = require('../db/db');
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { v4 as uuidv4 } from 'uuid';
+import {users, tasks} from '../db/db';
+import { UserReq } from '../interfaces/interfaces';
 
-const getUsers = (req, reply) => {
-  const usersWithoutPassword = users.users.map(user => (
+export const getUsers = (req: FastifyRequest, reply: FastifyReply) => {
+  const usersWithoutPassword = users.users?.map(user => (
       {
         name: user.name,
         login: user.login,
@@ -13,8 +15,8 @@ const getUsers = (req, reply) => {
   reply.send(usersWithoutPassword);
 };
 
-const getUser = (req, reply) => {
-  const {id} = req.params;
+export const getUser = (req: UserReq, reply: FastifyReply) => {
+  const { id } = req.params;
   const user = users.users.find(it => it.id === id);
 
   if (!user) {
@@ -25,9 +27,9 @@ const getUser = (req, reply) => {
   }
 
   const userWithoutPassword = {
-    name: user.name,
-    login: user.login,
-    id: user.id,
+    name: user?.name,
+    login: user?.login,
+    id: user?.id,
   }
 
   reply
@@ -36,7 +38,7 @@ const getUser = (req, reply) => {
     .send(userWithoutPassword);
 }
 
-const addUser = (req, reply) => {
+export const addUser = (req: UserReq, reply: FastifyReply) => {
   const { name, login, password } = req.body;
 
   const user = {
@@ -59,7 +61,7 @@ const addUser = (req, reply) => {
     .send(userWithoutPassword);
 };
 
-const deleteUser = (req, reply) => {
+export const deleteUser = (req: UserReq, reply: FastifyReply) => {
   const {id} = req.params;
 
   tasks.tasks = tasks.tasks.map(task => (task.userId === id ? {
@@ -77,7 +79,7 @@ const deleteUser = (req, reply) => {
   reply.send({message: `Item ${id} has been deleted`});
 }
 
-const updateUser = (req, reply) => {
+export const updateUser = (req : UserReq, reply: FastifyReply) => {
   const {id} = req.params;
 
   const {name, login, password} = req.body
@@ -91,11 +93,3 @@ const updateUser = (req, reply) => {
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(updatedUser);
 }
-
-module.exports = {
-  getUsers,
-  addUser,
-  getUser,
-  deleteUser,
-  updateUser
-};

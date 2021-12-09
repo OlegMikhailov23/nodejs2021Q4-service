@@ -1,4 +1,6 @@
-const { getTasks, addTask, getTask, updateTask, deleteTask } = require('../controllers/tasksController');
+import { FastifyInstance } from 'fastify';
+
+import{ getTasks, addTask, getTask, updateTask, deleteTask } from '../controllers/tasksController';
 
 
 const { Task } = require('../models/models');
@@ -58,7 +60,7 @@ const deleteTaskOpts = {
   handler: deleteTask
 }
 
-function taskRoutes(app, options, done) {
+function taskRoutes(app: FastifyInstance, options: object, done: () => void) {
   // Get all tasks
   app.get('/boards/:boardId/tasks', getTasksOpts);
 

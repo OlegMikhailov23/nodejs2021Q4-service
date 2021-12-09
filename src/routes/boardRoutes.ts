@@ -1,6 +1,7 @@
-const { getBoards, addBoard, getBoard, updateBoard, deleteBoard } = require('../controllers/boardsControllerr');
+import { Board } from '../models/models';
+import { FastifyInstance } from 'fastify';
 
-const { Board } = require('../models/models');
+const { getBoards, addBoard, getBoard, updateBoard, deleteBoard } = require('../controllers/boardsControllerr');
 
 const getBoardsOpts = {
   schema: {
@@ -73,7 +74,7 @@ const deleteBoardOpts = {
 }
 
 
-function boardRoutes(app, options, done) {
+function boardRoutes(app: FastifyInstance, options: object, done: () => void) {
   // Get all boards
   app.get('/boards', getBoardsOpts);
 
