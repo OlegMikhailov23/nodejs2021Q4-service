@@ -65,16 +65,15 @@ const deleteBoardOpts = {
       200: {
         type: 'object',
         properties: {
-          message: {type: 'string'}
+          message: { type: 'string' }
         }
       }
     }
   },
   handler: deleteBoard
-}
+};
 
-
-function boardRoutes(app: FastifyInstance, options: object, done: () => void) {
+function boardRoutes(app: FastifyInstance, options: object, done: () => void): void {
   // Get all boards
   app.get('/boards', getBoardsOpts);
 
@@ -88,7 +87,7 @@ function boardRoutes(app: FastifyInstance, options: object, done: () => void) {
   app.put('/boards/:id', updateBoardOpts);
 
   // Delete board
-  app.delete('/boards/:id', deleteBoardOpts)
+  app.delete('/boards/:id', deleteBoardOpts);
 
   done();
 }

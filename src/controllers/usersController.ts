@@ -1,21 +1,39 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { v4 as uuidv4 } from 'uuid';
-import {users, tasks} from '../db/db';
+import { users, tasks } from '../db/db';
 import { UserReq } from '../interfaces/interfaces';
 
-export const getUsers = (req: FastifyRequest, reply: FastifyReply) => {
+/**
+ * Returns all users from data base with status code 200.
+ *
+ * @param req - (FastifyRequest) client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
+
+export const getUsers = (req: FastifyRequest, reply: FastifyReply): void => {
   const usersWithoutPassword = users.users?.map(user => (
-      {
-        name: user.name,
-        login: user.login,
-        id: user.id,
-      }
-    ));
+    {
+      name: user.name,
+      login: user.login,
+      id: user.id
+    }
+  ));
 
   reply.send(usersWithoutPassword);
 };
 
-export const getUser = (req: UserReq, reply: FastifyReply) => {
+/**
+ * Returns single user from data base by id with status code 200.
+ *
+ * @param req - (UserReq) client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
+
+export const getUser = (req: UserReq, reply: FastifyReply): void => {
   const { id } = req.params;
   const user = users.users.find(it => it.id === id);
 
@@ -23,29 +41,38 @@ export const getUser = (req: UserReq, reply: FastifyReply) => {
     reply
       .code(404)
       .header('Content-Type', 'application/json; charset=utf-8')
-      .send({message : `User ${id} does not exist`} );
+      .send({ message: `User ${id} does not exist` });
   }
 
   const userWithoutPassword = {
     name: user?.name,
     login: user?.login,
-    id: user?.id,
-  }
+    id: user?.id
+  };
 
   reply
     .code(200)
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(userWithoutPassword);
-}
+};
 
-export const addUser = (req: UserReq, reply: FastifyReply) => {
+/**
+ * Creates user with status code 201.
+ *
+ * @param req - (UserReq) client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
+
+export const addUser = (req: UserReq, reply: FastifyReply): void => {
   const { name, login, password } = req.body;
 
   const user = {
     id: uuidv4(),
     name,
     login,
-    password,
+    password
   };
   users.users = [...users.users, user];
 
@@ -53,7 +80,7 @@ export const addUser = (req: UserReq, reply: FastifyReply) => {
     id: user.id,
     name: user.name,
     login: user.login
-  }
+  };
 
   reply
     .code(201)
@@ -61,8 +88,17 @@ export const addUser = (req: UserReq, reply: FastifyReply) => {
     .send(userWithoutPassword);
 };
 
-export const deleteUser = (req: UserReq, reply: FastifyReply) => {
-  const {id} = req.params;
+/**
+ * Removes user by id with status code 200.
+ *
+ * @param req - (UserReq) client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
+
+export const deleteUser = (req: UserReq, reply: FastifyReply): void => {
+  const { id } = req.params;
 
   tasks.tasks = tasks.tasks.map(task => (task.userId === id ? {
     id: task.id,
@@ -71,25 +107,34 @@ export const deleteUser = (req: UserReq, reply: FastifyReply) => {
     description: task.description,
     userId: null,
     boardId: task.boardId,
-    columnId: task.columnId,
-  } : task))
+    columnId: task.columnId
+  } : task));
 
   users.users = users.users.filter(it => it.id !== id);
 
-  reply.send({message: `Item ${id} has been deleted`});
-}
+  reply.send({ message: `Item ${id} has been deleted` });
+};
 
-export const updateUser = (req : UserReq, reply: FastifyReply) => {
-  const {id} = req.params;
+/**
+ * Updates user by id with status code 200.
+ *
+ * @param req - (UserReq) client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
 
-  const {name, login, password} = req.body
+export const updateUser = (req: UserReq, reply: FastifyReply): void => {
+  const { id } = req.params;
 
-  users.users = users.users.map(user => (user.id === id ? {id, name, login, password} : user))
+  const { name, login, password } = req.body;
 
-  const updatedUser = users.users.find(user => user.id === id)
+  users.users = users.users.map(user => (user.id === id ? { id, name, login, password } : user));
+
+  const updatedUser = users.users.find(user => user.id === id);
 
   reply
     .code(200)
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(updatedUser);
-}
+};

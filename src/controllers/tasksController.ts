@@ -3,13 +3,31 @@ import { FastifyReply } from 'fastify';
 import { tasks } from '../db/db';
 import { TaskReq } from '../interfaces/interfaces';
 
-export const getTasks = (req: TaskReq, reply: FastifyReply) => {
+/**
+ * Returns all tasks for board from data base with status code 200.
+ *
+ * @param req - (TaskReq)  client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
+
+export const getTasks = (req: TaskReq, reply: FastifyReply): void => {
   const { boardId } = req.params;
   const currentTasks = tasks.tasks.filter(it => it.boardId === boardId);
   reply.send(currentTasks);
 };
 
-export const addTask = (req: TaskReq, reply: FastifyReply) => {
+/**
+ * Creates task with status code 201.
+ *
+ * @param req - (TaskReq)  client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
+
+export const addTask = (req: TaskReq, reply: FastifyReply): void => {
   const { title, order, description, userId } = req.body;
   const { boardId } = req.params;
 
@@ -31,7 +49,16 @@ export const addTask = (req: TaskReq, reply: FastifyReply) => {
     .send(task);
 };
 
-export const getTask = (req: TaskReq, reply: FastifyReply) => {
+/**
+ * Returns single task from data base by task id with status code 200.
+ *
+ * @param req - (TaskReq)  client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
+
+export const getTask = (req: TaskReq, reply: FastifyReply): void => {
   const { taskId } = req.params;
 
   const task = tasks.tasks.find(it => it.id === taskId);
@@ -50,7 +77,16 @@ export const getTask = (req: TaskReq, reply: FastifyReply) => {
     .send(task);
 };
 
-export const updateTask = (req: TaskReq, reply: FastifyReply) => {
+/**
+ * Updates task by task id with status code 200.
+ *
+ * @param req - (TaskReq)  client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
+
+export const updateTask = (req: TaskReq, reply: FastifyReply): void => {
   const { taskId } = req.params;
 
   const { title, order, description, userId, boardId, columnId } = req.body;
@@ -62,9 +98,10 @@ export const updateTask = (req: TaskReq, reply: FastifyReply) => {
     description,
     userId,
     boardId,
-    columnId} : task))
+    columnId
+  } : task));
 
-  const updatedTask = tasks.tasks.find(task => task.id === taskId)
+  const updatedTask = tasks.tasks.find(task => task.id === taskId);
 
   reply
     .code(200)
@@ -72,8 +109,17 @@ export const updateTask = (req: TaskReq, reply: FastifyReply) => {
     .send(updatedTask);
 };
 
-export const deleteTask = (req: TaskReq, reply: FastifyReply) => {
-  const {taskId} = req.params;
+/**
+ * Removes task by task id with status code 200.
+ *
+ * @param req - (TaskReq)  client request
+ * @param reply - (FastifyReply) server response
+ * @returns void
+ *
+ */
+
+export const deleteTask = (req: TaskReq, reply: FastifyReply): void => {
+  const { taskId } = req.params;
   tasks.tasks = tasks.tasks.filter(it => it.id !== taskId);
-  reply.send({message: `Task ${taskId} has been deleted`});
-}
+  reply.send({ message: `Task ${taskId} has been deleted` });
+};
