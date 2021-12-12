@@ -1,5 +1,5 @@
-import { Board } from '../models/models';
 import { FastifyInstance } from 'fastify';
+import { Board } from '../models/models';
 
 const { getBoards, addBoard, getBoard, updateBoard, deleteBoard } = require('../controllers/boardsControllerr');
 

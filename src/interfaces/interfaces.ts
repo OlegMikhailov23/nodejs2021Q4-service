@@ -1,10 +1,5 @@
 import { FastifyRequest } from 'fastify';
 
-export interface UserCollection {
-  id: string;
-  users: Array<User> | [];
-}
-
 export interface User {
   id: string;
   name: string;
@@ -12,15 +7,9 @@ export interface User {
   password?: string;
 }
 
-export interface BoardCollection {
+export interface UserCollection {
   id: string;
-  boards: Array<Board> | [];
-}
-
-export interface Board {
-  id: string;
-  title: string;
-  columns: Array<Column>
+  users: Array<User> | [];
 }
 
 export interface Column {
@@ -29,9 +18,15 @@ export interface Column {
   order: number;
 }
 
-export interface TaskCollection {
+export interface Board {
   id: string;
-  tasks: Array<Task>;
+  title: string;
+  columns: Array<Column>
+}
+
+export interface BoardCollection {
+  id: string;
+  boards: Array<Board> | [];
 }
 
 export interface Task {
@@ -42,6 +37,11 @@ export interface Task {
   boardId: string | null;
   columnId: string | null;
   description: string | null;
+}
+
+export interface TaskCollection {
+  id: string;
+  tasks: Array<Task>;
 }
 
 export interface userParams {

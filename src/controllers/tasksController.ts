@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
+import { FastifyReply } from 'fastify';
 import { tasks } from '../db/db';
-import { FastifyReply, FastifyRequest } from 'fastify';
 import { TaskReq } from '../interfaces/interfaces';
 
 export const getTasks = (req: TaskReq, reply: FastifyReply) => {

@@ -5,7 +5,13 @@
     "allowJs": true,
     "noImplicitAny": true,
     "strict": true,
-
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "paths": {
+      "*": ["node_modules/*"]
+    }
   },
   "include": [
     "./src/**/*"
