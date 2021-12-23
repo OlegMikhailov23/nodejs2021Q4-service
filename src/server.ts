@@ -1,5 +1,6 @@
 const app = require('fastify')({ logger: true });
 const { PORT } = require('./common/config');
+import { myLogger } from './logger';
 
 app.register(require('fastify-swagger'), {
   exposeRoute: true,
@@ -23,6 +24,10 @@ app.register(require('./routes/taskRoutes'));
 const start = async (): Promise<void> => {
   try {
     await app.listen(PORT);
+    myLogger.info(`Hello! Server is running on ${PORT} port`);
+    myLogger.error('Some error');
+    myLogger.warn('Some warn');
+    myLogger.error(new Error('something wen wrong'))
   } catch (e) {
     app.log.error(e);
     process.exit(1);
