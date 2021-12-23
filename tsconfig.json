@@ -1,0 +1,21 @@
+{
+  "extends": "fastify-tsconfig",
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "allowJs": false,
+    "noImplicitAny": true,
+    "strict": true,
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "rootDir": "./src",
+    "resolveJsonModule": true,
+    "listEmittedFiles": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "node_modules"
+  ]
+}

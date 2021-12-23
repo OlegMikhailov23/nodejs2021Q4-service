@@ -20,7 +20,19 @@ npm install
 ## Running application
 
 ```
-npm start
+npm run start
+```
+
+## Running application in production mode
+
+```
+npm run start:prod
+```
+
+## Build dist
+
+```
+npm run build:ts
 ```
 
 After starting the app on port (4000 as default) you can open
