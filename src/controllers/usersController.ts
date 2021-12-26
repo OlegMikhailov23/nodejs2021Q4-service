@@ -2,6 +2,8 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { v4 as uuidv4 } from 'uuid';
 import { users, tasks } from '../db/db';
 import { UserReq } from '../interfaces/interfaces';
+import { myLogger, loggerMessages } from '../logger';
+
 
 /**
  * Returns all users from data base with status code 200.
@@ -13,15 +15,19 @@ import { UserReq } from '../interfaces/interfaces';
  */
 
 export const getUsers = (req: FastifyRequest, reply: FastifyReply): void => {
-  const usersWithoutPassword = users.users?.map(user => (
-    {
-      name: user.name,
-      login: user.login,
-      id: user.id
-    }
-  ));
+    const usersWithoutPassword = users.users?.map(user => (
+      {
+        name: user.name,
+        login: user.login,
+        id: user.id
+      }
+    ));
 
-  reply.send(usersWithoutPassword);
+    reply
+      .code(200)
+      .send(usersWithoutPassword);
+
+    myLogger.info(loggerMessages.getAll(req.method ,req.url, 200));
 };
 
 /**
@@ -54,6 +60,8 @@ export const getUser = (req: UserReq, reply: FastifyReply): void => {
     .code(200)
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(userWithoutPassword);
+
+  myLogger.info(loggerMessages.getSingle(req.method ,req.url, req.params.id, 200))
 };
 
 /**
@@ -86,6 +94,8 @@ export const addUser = (req: UserReq, reply: FastifyReply): void => {
     .code(201)
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(userWithoutPassword);
+
+  myLogger.info(loggerMessages.addItem(req.method ,req.url,201, req.body))
 };
 
 /**
@@ -111,8 +121,10 @@ export const deleteUser = (req: UserReq, reply: FastifyReply): void => {
   } : task));
 
   users.users = users.users.filter(it => it.id !== id);
-
-  reply.send({ message: `Item ${id} has been deleted` });
+  reply
+    .code(200)
+    .send({ message: `Item ${id} has been deleted` });
+  myLogger.info(loggerMessages.deleteItem(req.method ,req.url,req.params.id, 200))
 };
 
 /**
@@ -137,4 +149,6 @@ export const updateUser = (req: UserReq, reply: FastifyReply): void => {
     .code(200)
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(updatedUser);
+
+  myLogger.info(loggerMessages.updateItem(req.method ,req.url,req.params.id, 200, req.body))
 };

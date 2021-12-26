@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { FastifyReply } from 'fastify';
 import { tasks } from '../db/db';
 import { TaskReq } from '../interfaces/interfaces';
+import { loggerMessages, myLogger } from '../logger';
 
 /**
  * Returns all tasks for board from data base with status code 200.
@@ -16,6 +17,8 @@ export const getTasks = (req: TaskReq, reply: FastifyReply): void => {
   const { boardId } = req.params;
   const currentTasks = tasks.tasks.filter(it => it.boardId === boardId);
   reply.send(currentTasks);
+
+  myLogger.info(loggerMessages.getAll(req.method ,req.url, 200))
 };
 
 /**
@@ -47,6 +50,8 @@ export const addTask = (req: TaskReq, reply: FastifyReply): void => {
     .code(201)
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(task);
+
+  myLogger.info(loggerMessages.addItem(req.method ,req.url,201, req.body))
 };
 
 /**
@@ -75,6 +80,8 @@ export const getTask = (req: TaskReq, reply: FastifyReply): void => {
     .code(200)
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(task);
+
+  myLogger.info(loggerMessages.getSingle(req.method ,req.url, req.params.taskId, 200))
 };
 
 /**
@@ -107,6 +114,8 @@ export const updateTask = (req: TaskReq, reply: FastifyReply): void => {
     .code(200)
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(updatedTask);
+
+  myLogger.info(loggerMessages.updateItem(req.method ,req.url,req.params.taskId, 200, req.body))
 };
 
 /**
@@ -121,5 +130,9 @@ export const updateTask = (req: TaskReq, reply: FastifyReply): void => {
 export const deleteTask = (req: TaskReq, reply: FastifyReply): void => {
   const { taskId } = req.params;
   tasks.tasks = tasks.tasks.filter(it => it.id !== taskId);
-  reply.send({ message: `Task ${taskId} has been deleted` });
+  reply
+    .code(200)
+    .send({ message: `Task ${taskId} has been deleted` });
+
+  myLogger.info(loggerMessages.deleteItem(req.method ,req.url,req.params.taskId, 200))
 };
