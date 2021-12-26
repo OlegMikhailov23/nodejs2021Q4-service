@@ -16,7 +16,12 @@ export const myLogger = createLogger({
     format.errors({stack: true}),
     myFormat),
   transports: [
-    new transports.Console()
+    new transports.Console(),
+    new transports.File({filename: 'common.log'}),
+    new transports.File({
+      filename: 'errors.log',
+      level: 'error'
+    })
   ]
 });
 

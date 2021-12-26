@@ -15,6 +15,7 @@ import { myLogger, loggerMessages } from '../logger';
  */
 
 export const getUsers = (req: FastifyRequest, reply: FastifyReply): void => {
+    throw Error()
     const usersWithoutPassword = users.users?.map(user => (
       {
         name: user.name,
