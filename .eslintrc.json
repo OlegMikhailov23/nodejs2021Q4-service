@@ -41,10 +41,12 @@
     "linebreak-style": "off",
     "node/no-unsupported-features/es-syntax": "off",
     "no-underscore-dangle": "off",
+    "no-shadow": "off",
     "import/prefer-default-export": "off",
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-var-requires": 0,
     "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/ban-ts-comment": 0,
     "node/no-missing-import": ["error", {
       "allowModules": [],
       "resolvePaths": [],

@@ -14,7 +14,9 @@
     "resolveJsonModule": true,
     "listEmittedFiles": true
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]

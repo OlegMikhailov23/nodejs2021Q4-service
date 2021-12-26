@@ -1,15 +1,16 @@
 import { Board, Task, User } from '../interfaces/interfaces';
 
 const { createLogger, format, transports } = require('winston');
+
 const { printf, timestamp, combine, colorize } = format;
 
 // @ts-ignore: next-line
-const myFormat = printf(({ level, message, timestamp, stack }) => {
-  return `[${timestamp}] ${level}: ${stack || message}`;
-});
+const myFormat = printf(({ level, message, timestamp, stack }) => `[${timestamp}] ${level}: ${stack || message}`);
 
+const getLevel = process.env.NODE_ENV === 'development' ? 'debug' : 'warn';
 
 export const myLogger = createLogger({
+  level: getLevel,
   format: combine(
     colorize(),
     timestamp({ format: 'HH:mm:ss' }),
@@ -33,7 +34,7 @@ export const loggerMessages = {
 
   getSingle(method: string ,url: string, query:string ,code: number) : string {
     return `${method} request URL:${url}\n\
-            query-params: ${query}\n\ 
+            query-params: ${query}\n 
             with status code ${code}`
   },
 

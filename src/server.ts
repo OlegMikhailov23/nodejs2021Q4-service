@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { myLogger } from './logger';
 
 const app = require('fastify')({
   logger: false,
   pluginTimeout: 100000,
   prettyPrint: true});
 const { PORT } = require('./common/config');
-import { myLogger } from './logger';
 
 app.register(require('fastify-swagger'), {
   exposeRoute: true,
@@ -15,7 +15,7 @@ app.register(require('fastify-swagger'), {
   }
 });
 
-app.setErrorHandler(function (error: any, request: FastifyRequest, reply: FastifyReply) {
+app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply) => {
   // Log error
   app.log.error(error)
   // Custom Logging
@@ -38,6 +38,7 @@ app.register(require('./routes/taskRoutes'));
 const start = async (): Promise<void> => {
   try {
     await app.listen(PORT);
+    console.log(`Hello! Server is running on ${PORT} port`);
     myLogger.info(`Hello! Server is running on ${PORT} port`);
   } catch (e) {
     app.log.fatal(e);
