@@ -1,5 +1,10 @@
 {
   "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint/eslint-plugin",
+    "eslint-plugin-tsdoc"
+  ],
   "env": {
     "es2020": true,
     "jasmine": true,
@@ -11,14 +16,23 @@
     "ecmaVersion": 2021,
     "ecmaFeatures": {
       "impliedStrict": true
-    }
+    },
+    "project": "./tsconfig.json"
   },
   "settings": {
-    "noInlineConfig": true
+    "noInlineConfig": true,
+    "import/resolver": {
+      "node": {
+        "extensions": [".ts"]
+      }
+    }
   },
   "extends": [
     "eslint:recommended",
     "plugin:node/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:import/typescript",
+    "plugin:@typescript-eslint/recommended",
     "airbnb-base",
     "prettier"
   ],
@@ -27,6 +41,23 @@
     "linebreak-style": "off",
     "node/no-unsupported-features/es-syntax": "off",
     "no-underscore-dangle": "off",
-    "import/prefer-default-export": "off"
+    "no-shadow": "off",
+    "import/prefer-default-export": "off",
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/ban-ts-comment": 0,
+    "node/no-missing-import": ["error", {
+      "allowModules": [],
+      "resolvePaths": [],
+      "tryExtensions": [".js", ".json", ".node", ".ts"]
+    }],
+    "node/no-missing-require": ["error", {
+      "allowModules": [],
+      "resolvePaths": [],
+      "tryExtensions": [".js", ".json", ".node", ".ts"]
+    }],
+    "import/no-import-module-exports": 1,
+    "tsdoc/syntax": "warn"
   }
 }

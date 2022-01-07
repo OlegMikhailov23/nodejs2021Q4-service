@@ -1,4 +1,4 @@
-const User = {
+export const User = {
   type: 'object',
   properties: {
     id: {type: 'string'},
@@ -8,7 +8,7 @@ const User = {
   }
 }
 
-const Column = {
+export const Column = {
   type: 'object',
   properties: {
     id: {type: 'string'},
@@ -17,7 +17,7 @@ const Column = {
   }
 }
 
-const Board = {
+export const Board = {
   type: 'object',
   properties: {
     id: {type: 'string'},
@@ -29,7 +29,7 @@ const Board = {
   }
 }
 
-const Task = {
+export const Task = {
   type: 'object',
   properties: {
     id: {type: 'string'},
@@ -50,10 +50,3 @@ const Task = {
     },
   }
 }
-
-module.exports = {
-  User,
-  Board,
-  Column,
-  Task,
-};
