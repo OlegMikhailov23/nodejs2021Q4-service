@@ -2,4 +2,7 @@ node_modules
 .idea/
 
 *.log
-dist
+
+doc
+.vscode
+README.md

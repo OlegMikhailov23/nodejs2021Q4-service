@@ -37,7 +37,7 @@ app.register(require('./routes/taskRoutes'));
 
 const start = async (): Promise<void> => {
   try {
-    await app.listen(PORT);
+    await app.listen(PORT, '0.0.0.0');
     console.log(`Hello! Server is running on ${PORT} port`);
     myLogger.info(`Hello! Server is running on ${PORT} port`);
   } catch (e) {
