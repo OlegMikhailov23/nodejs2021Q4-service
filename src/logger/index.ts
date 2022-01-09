@@ -18,9 +18,9 @@ export const myLogger = createLogger({
     myFormat),
   transports: [
     new transports.Console(),
-    new transports.File({filename: 'common.log'}),
+    new transports.File({filename: 'logs/common.log'}),
     new transports.File({
-      filename: 'errors.log',
+      filename: 'logs/errors.log',
       level: 'error'
     })
   ]

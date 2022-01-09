@@ -2,7 +2,7 @@ version: '3.0'
 
 services:
   nodejs-service:
-    image: my-service
+    image: nodejs-service-q4
     build: .
     env_file:
       - .env.development
@@ -13,12 +13,13 @@ services:
     volumes:
       - .:/usr/app/src
       - /usr/app/src/node_modules
+      - ./logs:/usr/logs
     depends_on:
       - postgres
     restart: always
   postgres:
     build: ./database
-    image: my-postgres
+    image: postgres-service-q4
     env_file:
       - .env.development
     environment:
@@ -34,3 +35,6 @@ services:
 
 volumes:
   pgdata:
+networks:
+  default:
+    name: nodejs-service-net

@@ -1,8 +1,17 @@
 node_modules
+
 .idea/
 
 *.log
 
+.github
+.git
+
 doc
+
 .vscode
+
 README.md
+
+temp*
+*/temp*
