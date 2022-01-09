@@ -11,6 +11,15 @@
 git clone https://github.com/OlegMikhailov23/nodejs2021Q4-service.git
 ```
 
+## Start with Docker
+
+ - download docker https://docs.docker.com/engine/install/ (if it necessary);
+ - create account here https://hub.docker.com/ (if it necessary);
+ - run:
+ ```
+ $ docker-compose up
+```
+
 ## Installing NPM modules
 
 ```
