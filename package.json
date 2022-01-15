@@ -9,12 +9,13 @@
   "description": "REST service starter for RS School",
   "main": "src/server.ts",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon src/server.ts",
-    "start:prod": "npm run build:ts && cross-env NODE_ENV=production  node dist/server.js",
+    "start": "cross-env NODE_ENV=development nodemon --watch './**/*.ts' --exec 'ts-node' src/server.ts",
+    "start:prod": "npm run build:ts && cross-env NODE_ENV=production node dist/server.js",
     "build:ts": "tsc",
     "lint": "eslint --ext .js,.ts --fix src/",
     "test": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/*.test.js\" --noStackTrace --runInBand",
-    "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace"
+    "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace",
+    "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./src/common/ormconfig.ts"
   },
   "keywords": [
     "rs",
@@ -49,6 +50,8 @@
     "dotenv": "10.0.0",
     "fastify": "^3.24.1",
     "fastify-swagger": "^4.12.6",
+    "pg": "^8.7.1",
+    "typeorm": "^0.2.41",
     "uuid": "8.3.2",
     "winston": "^3.3.3",
     "yamljs": "0.3.0"

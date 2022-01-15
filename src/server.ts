@@ -1,4 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { createConnection } from 'typeorm';
+import ConnectionOptions from './common/ormconfig';
 import { myLogger } from './logger';
 
 const app = require('fastify')({
@@ -7,11 +9,12 @@ const app = require('fastify')({
   prettyPrint: true});
 const { PORT } = require('./common/config');
 
+
 app.register(require('fastify-swagger'), {
   exposeRoute: true,
   routePrefix: '/docs',
   swagger: {
-    info: { title: 'nodejs2021Q4-service' }
+    info: { title: 'nodejs2021Q4-service TS' }
   }
 });
 
@@ -36,10 +39,14 @@ app.register(require('./routes/taskRoutes'));
  */
 
 const start = async (): Promise<void> => {
+  console.log(ConnectionOptions,'hereee')
   try {
+    const connection  = await createConnection(ConnectionOptions);
+    connection.runMigrations();
+    myLogger.info(`Connected to PSG!`)
     await app.listen(PORT, '0.0.0.0');
     console.log(`Hello! Server is running on ${PORT} port`);
-    myLogger.info(`Hello! Server is running on ${PORT} port`);
+    myLogger.info(`Hello! Server is running on http://localhost:${PORT}`);
   } catch (e) {
     app.log.fatal(e);
     myLogger.error(new Error('Oops! application felt-down with error ...'));

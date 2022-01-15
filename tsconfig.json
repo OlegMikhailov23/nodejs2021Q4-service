@@ -1,10 +1,8 @@
 {
   "extends": "fastify-tsconfig",
   "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
-    "allowJs": false,
-    "noImplicitAny": true,
+    "strictPropertyInitialization": false, // for typeorm
+    "experimentalDecorators": true, // for typeorm
     "strict": true,
     "outDir": "dist",
     "esModuleInterop": true,
