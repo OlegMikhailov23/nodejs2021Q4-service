@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { getUsers, addUser, getUser, deleteUser, updateUser } from '../controllers/usersController';
 import { User} from '../models/models'
 
+
 const getUsersOpts = {
   schema: {
     response: {

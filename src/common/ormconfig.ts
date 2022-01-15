@@ -14,12 +14,12 @@ export default {
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
-  synchronize: false,
-  migrate: true,
+  synchronize: true,
+  // migrate: true,
   entities: [
     'src/**/**.entity{.ts,.js}',
   ],
-  cli: {
-    migrationsDir: 'src/migrations',
-  }
+  // cli: {
+  //   migrationsDir: 'src/migrations',
+  // }
 } as ConnectionOptions;
