@@ -18,6 +18,7 @@ export interface Column {
   order: number;
 }
 
+
 export interface Board {
   id: string;
   title: string;

@@ -39,7 +39,6 @@ app.register(require('./routes/taskRoutes'));
  */
 
 const start = async (): Promise<void> => {
-  console.log(ConnectionOptions,'hereee')
   try {
     const connection  = await createConnection(ConnectionOptions);
     connection.runMigrations();

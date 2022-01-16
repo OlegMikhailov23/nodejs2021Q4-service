@@ -1,10 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-// import {
-  // users,
-  // tasks
-// } from '../db/db';
 import { UserReq } from '../interfaces/interfaces';
 import { myLogger, loggerMessages } from '../logger';
 import { User } from '../entities/User.entity';
@@ -112,17 +108,6 @@ export const deleteUser = async (req: UserReq, reply: FastifyReply): Promise<voi
   const userRepository = getRepository(User);
   await userRepository.delete(id);
 
-
-  // tasks.tasks = tasks.tasks.map(task => (task.userId === id ? {
-  //   id: task.id,
-  //   title: task.title,
-  //   order: task.order,
-  //   description: task.description,
-  //   userId: null,
-  //   boardId: task.boardId,
-  //   columnId: task.columnId
-  // } : task));
-
   reply
     .code(200)
     .send({ message: `User ${id} has been deleted` });
@@ -140,7 +125,6 @@ export const deleteUser = async (req: UserReq, reply: FastifyReply): Promise<voi
 
 export const updateUser = async (req: UserReq, reply: FastifyReply): Promise<void> => {
   const { id } = req.params;
-  // const { name, login, password } = req.body;
 
   const userRepository = getRepository(User);
   const user = await userRepository.findOne(id);
