@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { BoardReq } from '../interfaces/interfaces';
 import { loggerMessages, myLogger } from '../logger';
-import { Board } from '../entities/Board.entity';
+import { Board } from '../entities/Board';
 
 /**
  * Returns all boards from data base with status code 200.

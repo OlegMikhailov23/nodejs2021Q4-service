@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { UserReq } from '../interfaces/interfaces';
 import { myLogger, loggerMessages } from '../logger';
-import { User } from '../entities/User.entity';
+import { User } from '../entities/User';
 
 
 /**
