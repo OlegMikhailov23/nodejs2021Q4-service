@@ -20,6 +20,18 @@ git clone https://github.com/OlegMikhailov23/nodejs2021Q4-service.git
  $ docker-compose up
 ```
 
+## Start DB in synchronize mode
+ - add to orm config property `synchronize: true`
+ 
+## Start DB in migration mode
+ - start docker container;
+ - in cli type:
+ ```docker exec -i -t <continer id> sh```
+ - run:
+ ```npm run typeorm:createmig```
+ - for running migration: 
+ ```npm run typeorm:runmig```
+
 ## Installing NPM modules
 
 ```
