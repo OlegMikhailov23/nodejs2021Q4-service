@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
+import { getRepository } from 'typeorm';
 import { FastifyReply } from 'fastify';
-import { tasks } from '../db/db';
+import { Task } from '../entities/Task';
 import { TaskReq } from '../interfaces/interfaces';
 import { loggerMessages, myLogger } from '../logger';
 
@@ -13,12 +14,13 @@ import { loggerMessages, myLogger } from '../logger';
  *
  */
 
-export const getTasks = (req: TaskReq, reply: FastifyReply): void => {
+export const getTasks = async (req: TaskReq, reply: FastifyReply): Promise<void> => {
   const { boardId } = req.params;
-  const currentTasks = tasks.tasks.filter(it => it.boardId === boardId);
+  const taskRepository = getRepository(Task);
+  const currentTasks = await taskRepository.find({ where: { boardId: boardId } });
   reply.send(currentTasks);
 
-  myLogger.info(loggerMessages.getAll(req.method ,req.url, 200))
+  myLogger.info(loggerMessages.getAll(req.method, req.url, 200));
 };
 
 /**
@@ -30,28 +32,27 @@ export const getTasks = (req: TaskReq, reply: FastifyReply): void => {
  *
  */
 
-export const addTask = (req: TaskReq, reply: FastifyReply): void => {
+export const addTask = async (req: TaskReq, reply: FastifyReply): Promise<void> => {
   const { title, order, description, userId } = req.body;
   const { boardId } = req.params;
+  const taskRepository = getRepository(Task);
 
-  const task = {
-    id: uuidv4(),
-    title,
-    order,
-    description,
-    userId,
-    boardId,
-    columnId: null // Tests needs this should be null
-  };
-
-  tasks.tasks = [...tasks.tasks, task];
+  const task = await taskRepository.create();
+  task.id = uuidv4();
+  task.title = title;
+  task.order = order;
+  task.description = description;
+  task.userId = userId;
+  task.boardId = boardId;
+  task.columnId = null;
+  await taskRepository.save(task);
 
   reply
     .code(201)
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(task);
 
-  myLogger.info(loggerMessages.addItem(req.method ,req.url,201, req.body))
+  myLogger.info(loggerMessages.addItem(req.method, req.url, 201, req.body));
 };
 
 /**
@@ -63,11 +64,10 @@ export const addTask = (req: TaskReq, reply: FastifyReply): void => {
  *
  */
 
-export const getTask = (req: TaskReq, reply: FastifyReply): void => {
+export const getTask = async (req: TaskReq, reply: FastifyReply): Promise<void> => {
   const { taskId } = req.params;
-
-  const task = tasks.tasks.find(it => it.id === taskId);
-
+  const taskRepository = getRepository(Task);
+  const task = await taskRepository.findOne(taskId);
 
   if (!task) {
     reply
@@ -81,7 +81,7 @@ export const getTask = (req: TaskReq, reply: FastifyReply): void => {
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(task);
 
-  myLogger.info(loggerMessages.getSingle(req.method ,req.url, req.params.taskId, 200))
+  myLogger.info(loggerMessages.getSingle(req.method, req.url, req.params.taskId, 200));
 };
 
 /**
@@ -93,29 +93,35 @@ export const getTask = (req: TaskReq, reply: FastifyReply): void => {
  *
  */
 
-export const updateTask = (req: TaskReq, reply: FastifyReply): void => {
+export const updateTask = async (req: TaskReq, reply: FastifyReply): Promise<void> => {
   const { taskId } = req.params;
-
   const { title, order, description, userId, boardId, columnId } = req.body;
+  const taskRepository = getRepository(Task);
+  const task = await taskRepository.findOne(taskId);
 
-  tasks.tasks = tasks.tasks.map(task => (task.id === taskId ? {
-    id: taskId,
-    title,
-    order,
-    description,
-    userId,
-    boardId,
-    columnId
-  } : task));
+  if (task) {
+    const updatedTask = taskRepository.merge(
+      task,
+      { title },
+      { order },
+      { description },
+      { userId },
+      { boardId },
+      { columnId }
+    );
 
-  const updatedTask = tasks.tasks.find(task => task.id === taskId);
+    reply
+      .code(200)
+      .header('Content-Type', 'application/json; charset=utf-8')
+      .send(updatedTask);
+  }
 
   reply
-    .code(200)
+    .code(404)
     .header('Content-Type', 'application/json; charset=utf-8')
-    .send(updatedTask);
+    .send({ message: `Task ${taskId} does not exist` });
 
-  myLogger.info(loggerMessages.updateItem(req.method ,req.url,req.params.taskId, 200, req.body))
+  myLogger.info(loggerMessages.updateItem(req.method, req.url, req.params.taskId, 200, req.body));
 };
 
 /**
@@ -127,12 +133,13 @@ export const updateTask = (req: TaskReq, reply: FastifyReply): void => {
  *
  */
 
-export const deleteTask = (req: TaskReq, reply: FastifyReply): void => {
+export const deleteTask = async (req: TaskReq, reply: FastifyReply): Promise<void> => {
   const { taskId } = req.params;
-  tasks.tasks = tasks.tasks.filter(it => it.id !== taskId);
+  const taskRepository = getRepository(Task);
+  await taskRepository.delete(taskId);
   reply
     .code(200)
     .send({ message: `Task ${taskId} has been deleted` });
 
-  myLogger.info(loggerMessages.deleteItem(req.method ,req.url,req.params.taskId, 200))
+  myLogger.info(loggerMessages.deleteItem(req.method, req.url, req.params.taskId, 200));
 };

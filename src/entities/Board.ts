@@ -11,6 +11,6 @@ export class Board extends BaseEntity{
 
   title: string;
 
-  @Column('simple-json')
+  @Column('json')
   columns: string
 }
