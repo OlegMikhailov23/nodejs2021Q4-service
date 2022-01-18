@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Board } from './Board';
+import { Entity, ManyToOne, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { User } from './User';
+import { Board } from './Board';
 import { BaseEntity } from 'typeorm/index';
 
 @Entity()
@@ -14,9 +14,6 @@ export class Task extends BaseEntity {
   @Column('integer')
   order: number;
 
-  @Column('text')
-  description: string;
-
   @Column({
     type: 'uuid',
     nullable: true,
@@ -25,6 +22,9 @@ export class Task extends BaseEntity {
 
   @Column('uuid')
   boardId: string;
+
+  @Column('text')
+  description: string;
 
   @Column({
     type: 'uuid',
