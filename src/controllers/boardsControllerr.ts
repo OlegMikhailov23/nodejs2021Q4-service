@@ -119,6 +119,7 @@ export const updateBoard = async (req: BoardReq, reply: FastifyReply): Promise<v
 
   if (board) {
     const updatedBoard = boardRepository.merge(board, { title: title }, {columns: JSON.stringify(columns)});
+    await boardRepository.save(updatedBoard);
     reply
       .code(200)
       .header('Content-Type', 'application/json; charset=utf-8')

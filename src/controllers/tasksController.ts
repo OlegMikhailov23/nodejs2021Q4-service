@@ -110,6 +110,8 @@ export const updateTask = async (req: TaskReq, reply: FastifyReply): Promise<voi
       { columnId }
     );
 
+    await taskRepository.save(updatedTask)
+
     reply
       .code(200)
       .header('Content-Type', 'application/json; charset=utf-8')
