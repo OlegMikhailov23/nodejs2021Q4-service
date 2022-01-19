@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserReq } from '../interfaces/interfaces';
 import { myLogger, loggerMessages } from '../logger';
 import { User } from '../entities/User';
+import { Task } from '../entities/Task';
 
 
 /**
@@ -35,7 +36,7 @@ export const getUsers = async (req: FastifyRequest, reply: FastifyReply): Promis
  *
  */
 
-export const getUser = async (req: UserReq, reply: FastifyReply): Promise<void>  => {
+export const getUser = async (req: UserReq, reply: FastifyReply): Promise<void> => {
   const { id } = req.params;
   const userRepository = getRepository(User);
   const user = await userRepository.findOne(id);
@@ -73,7 +74,7 @@ export const getUser = async (req: UserReq, reply: FastifyReply): Promise<void> 
 export const addUser = async (req: UserReq, reply: FastifyReply): Promise<void> => {
   const { name, login, password } = req.body;
   const userRepository = getRepository(User);
-  const user = await userRepository.create()
+  const user = await userRepository.create();
   user.id = uuidv4();
   user.name = name;
   user.login = login;
@@ -106,6 +107,15 @@ export const addUser = async (req: UserReq, reply: FastifyReply): Promise<void> 
 export const deleteUser = async (req: UserReq, reply: FastifyReply): Promise<void> => {
   const { id } = req.params;
   const userRepository = getRepository(User);
+  const taskRepository = getRepository(Task);
+  const tasks = await taskRepository.find({ userId: id });
+
+  for (let i = 0; i < tasks.length; i += 1) {
+    const task = tasks[i];
+    const updatedTask = taskRepository.merge(task, { userId: null });
+    await taskRepository.save(updatedTask);
+  }
+
   await userRepository.delete(id);
 
   reply

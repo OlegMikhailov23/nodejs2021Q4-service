@@ -4,6 +4,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { BoardReq } from '../interfaces/interfaces';
 import { loggerMessages, myLogger } from '../logger';
 import { Board } from '../entities/Board';
+import { Task } from '../entities/Task';
 
 /**
  * Returns all boards from data base with status code 200.
@@ -28,7 +29,7 @@ export const getBoards = async (req: FastifyRequest, reply: FastifyReply): Promi
     .code(200)
     .send(readableBoards);
 
-  myLogger.info(loggerMessages.getAll(req.method ,req.url, 200))
+  myLogger.info(loggerMessages.getAll(req.method, req.url, 200));
 };
 
 /**
@@ -51,7 +52,7 @@ export const addBoard = async (req: BoardReq, reply: FastifyReply): Promise<void
     {
       id: uuidv4(),
       title: column.title,
-      order: column.order,
+      order: column.order
     }
   ));
 
@@ -65,7 +66,7 @@ export const addBoard = async (req: BoardReq, reply: FastifyReply): Promise<void
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(board);
 
-  myLogger.info(loggerMessages.addItem(req.method ,req.url,201, req.body))
+  myLogger.info(loggerMessages.addItem(req.method, req.url, 201, req.body));
 };
 
 /**
@@ -90,12 +91,12 @@ export const getBoard = async (req: BoardReq, reply: FastifyReply): Promise<void
       .send(board);
   }
 
-    reply
-      .code(404)
-      .header('Content-Type', 'application/json; charset=utf-8')
-      .send({ message: `Board ${id} does not exist` });
+  reply
+    .code(404)
+    .header('Content-Type', 'application/json; charset=utf-8')
+    .send({ message: `Board ${id} does not exist` });
 
-  myLogger.info(loggerMessages.getSingle(req.method ,req.url, req.params.id, 200))
+  myLogger.info(loggerMessages.getSingle(req.method, req.url, req.params.id, 200));
 };
 
 /**
@@ -118,7 +119,7 @@ export const updateBoard = async (req: BoardReq, reply: FastifyReply): Promise<v
   const board = await boardRepository.findOne(id);
 
   if (board) {
-    const updatedBoard = boardRepository.merge(board, { title: title }, {columns: JSON.stringify(columns)});
+    const updatedBoard = boardRepository.merge(board, { title: title }, { columns: JSON.stringify(columns) });
     await boardRepository.save(updatedBoard);
     reply
       .code(200)
@@ -131,7 +132,7 @@ export const updateBoard = async (req: BoardReq, reply: FastifyReply): Promise<v
     .header('Content-Type', 'application/json; charset=utf-8')
     .send({ message: `Board ${id} does not exist` });
 
-  myLogger.info(loggerMessages.updateItem(req.method ,req.url,req.params.id, 200, req.body));
+  myLogger.info(loggerMessages.updateItem(req.method, req.url, req.params.id, 200, req.body));
 };
 
 /**
@@ -147,10 +148,11 @@ export const deleteBoard = async (req: BoardReq, reply: FastifyReply): Promise<v
   const { id } = req.params;
 
   const boardRepository = getRepository(Board);
-
+  const taskRepository = getRepository(Task);
+  await taskRepository.delete({ boardId: id });
   await boardRepository.delete(id);
 
   reply.send({ message: `Board ${id} has been deleted` });
 
-  myLogger.info(loggerMessages.deleteItem(req.method ,req.url,req.params.id, 200))
+  myLogger.info(loggerMessages.deleteItem(req.method, req.url, req.params.id, 200));
 };
