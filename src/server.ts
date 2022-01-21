@@ -27,6 +27,7 @@ app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply)
   reply.status(500).send({ ok: false, message: 'Something goes wrong:(' })
 })
 
+app.register(require('./routes/loginRoute'));
 app.register(require('./routes/userRoutes'));
 app.register(require('./routes/boardRoutes'));
 app.register(require('./routes/taskRoutes'));

@@ -51,6 +51,7 @@
     "dotenv": "10.0.0",
     "fastify": "^3.24.1",
     "fastify-swagger": "^4.12.6",
+    "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.41",
@@ -59,6 +60,7 @@
     "yamljs": "0.3.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^16.11.12",
     "@types/uuid": "^8.3.3",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
