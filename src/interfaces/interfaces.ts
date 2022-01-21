@@ -4,7 +4,7 @@ export interface User {
   id: string;
   name: string;
   login: string;
-  password?: string;
+  password: string;
 }
 
 export interface UserCollection {
@@ -17,6 +17,7 @@ export interface Column {
   title: string;
   order: number;
 }
+
 
 export interface Board {
   id: string;
@@ -32,11 +33,11 @@ export interface BoardCollection {
 export interface Task {
   id: string;
   title: string;
-  order: number | null;
+  order: number;
   userId: string | null;
-  boardId: string | null;
+  boardId: string;
   columnId: string | null;
-  description: string | null;
+  description: string;
 }
 
 export interface TaskCollection {

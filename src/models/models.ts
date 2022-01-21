@@ -14,6 +14,7 @@ export const Column = {
     id: {type: 'string'},
     title: {type: 'string'},
     order: {type: 'number'},
+    board: {type: 'string'},
   }
 }
 

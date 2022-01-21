@@ -2,6 +2,7 @@ version: '3.0'
 
 services:
   nodejs-service:
+    container_name: nodejs-service
     image: nodejs-service-q4
     build: .
     env_file:
@@ -17,7 +18,12 @@ services:
     depends_on:
       - postgres
     restart: always
+    networks:
+      - nodejs-service-net
+
+
   postgres:
+    container_name: db
     build: ./database
     image: postgres-service-q4
     env_file:
@@ -30,11 +36,14 @@ services:
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
+      - ./database/init/:/docker-entrypoint-initdb.d
       - pgdata:/var/lib/postgresql/data
     restart: always
+    networks:
+      - nodejs-service-net
 
 volumes:
   pgdata:
 networks:
-  default:
-    name: nodejs-service-net
+    nodejs-service-net:
+      driver: bridge

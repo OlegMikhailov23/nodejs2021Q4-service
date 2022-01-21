@@ -1,8 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { users, tasks } from '../db/db';
 import { UserReq } from '../interfaces/interfaces';
 import { myLogger, loggerMessages } from '../logger';
+import { User } from '../entities/User';
+import { Task } from '../entities/Task';
 
 
 /**
@@ -14,20 +16,15 @@ import { myLogger, loggerMessages } from '../logger';
  *
  */
 
-export const getUsers = (req: FastifyRequest, reply: FastifyReply): void => {
-    const usersWithoutPassword = users.users?.map(user => (
-      {
-        name: user.name,
-        login: user.login,
-        id: user.id
-      }
-    ));
+export const getUsers = async (req: FastifyRequest, reply: FastifyReply): Promise<void> => {
+  const userRepository = getRepository(User);
+  const users = await userRepository.find({ select: ['id', 'name', 'login'] });
 
-    reply
-      .code(200)
-      .send(usersWithoutPassword);
+  reply
+    .code(200)
+    .send(users);
 
-    myLogger.info(loggerMessages.getAll(req.method ,req.url, 200));
+  myLogger.info(loggerMessages.getAll(req.method, req.url, 200));
 };
 
 /**
@@ -39,9 +36,10 @@ export const getUsers = (req: FastifyRequest, reply: FastifyReply): void => {
  *
  */
 
-export const getUser = (req: UserReq, reply: FastifyReply): void => {
+export const getUser = async (req: UserReq, reply: FastifyReply): Promise<void> => {
   const { id } = req.params;
-  const user = users.users.find(it => it.id === id);
+  const userRepository = getRepository(User);
+  const user = await userRepository.findOne(id);
 
   if (!user) {
     reply
@@ -61,7 +59,7 @@ export const getUser = (req: UserReq, reply: FastifyReply): void => {
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(userWithoutPassword);
 
-  myLogger.info(loggerMessages.getSingle(req.method ,req.url, req.params.id, 200))
+  myLogger.info(loggerMessages.getSingle(req.method, req.url, req.params.id, 200));
 };
 
 /**
@@ -73,16 +71,15 @@ export const getUser = (req: UserReq, reply: FastifyReply): void => {
  *
  */
 
-export const addUser = (req: UserReq, reply: FastifyReply): void => {
+export const addUser = async (req: UserReq, reply: FastifyReply): Promise<void> => {
   const { name, login, password } = req.body;
-
-  const user = {
-    id: uuidv4(),
-    name,
-    login,
-    password
-  };
-  users.users = [...users.users, user];
+  const userRepository = getRepository(User);
+  const user = await userRepository.create();
+  user.id = uuidv4();
+  user.name = name;
+  user.login = login;
+  user.password = password;
+  await userRepository.save(user);
 
   const userWithoutPassword = {
     id: user.id,
@@ -95,7 +92,7 @@ export const addUser = (req: UserReq, reply: FastifyReply): void => {
     .header('Content-Type', 'application/json; charset=utf-8')
     .send(userWithoutPassword);
 
-  myLogger.info(loggerMessages.addItem(req.method ,req.url,201, req.body))
+  myLogger.info(loggerMessages.addItem(req.method, req.url, 201, req.body));
 };
 
 /**
@@ -107,24 +104,24 @@ export const addUser = (req: UserReq, reply: FastifyReply): void => {
  *
  */
 
-export const deleteUser = (req: UserReq, reply: FastifyReply): void => {
+export const deleteUser = async (req: UserReq, reply: FastifyReply): Promise<void> => {
   const { id } = req.params;
+  const userRepository = getRepository(User);
+  const taskRepository = getRepository(Task);
+  const tasks = await taskRepository.find({ userId: id });
 
-  tasks.tasks = tasks.tasks.map(task => (task.userId === id ? {
-    id: task.id,
-    title: task.title,
-    order: task.order,
-    description: task.description,
-    userId: null,
-    boardId: task.boardId,
-    columnId: task.columnId
-  } : task));
+  for (let i = 0; i < tasks.length; i += 1) {
+    const task = tasks[i];
+    const updatedTask = taskRepository.merge(task, { userId: null });
+    await taskRepository.save(updatedTask);
+  }
 
-  users.users = users.users.filter(it => it.id !== id);
+  await userRepository.delete(id);
+
   reply
     .code(200)
-    .send({ message: `Item ${id} has been deleted` });
-  myLogger.info(loggerMessages.deleteItem(req.method ,req.url,req.params.id, 200))
+    .send({ message: `User ${id} has been deleted` });
+  myLogger.info(loggerMessages.deleteItem(req.method, req.url, req.params.id, 200));
 };
 
 /**
@@ -136,19 +133,25 @@ export const deleteUser = (req: UserReq, reply: FastifyReply): void => {
  *
  */
 
-export const updateUser = (req: UserReq, reply: FastifyReply): void => {
+export const updateUser = async (req: UserReq, reply: FastifyReply): Promise<void> => {
   const { id } = req.params;
 
-  const { name, login, password } = req.body;
+  const userRepository = getRepository(User);
+  const user = await userRepository.findOne(id);
+  if (user) {
+    const updatedUser = userRepository.merge(user, req.body);
+    await userRepository.save(updatedUser);
 
-  users.users = users.users.map(user => (user.id === id ? { id, name, login, password } : user));
-
-  const updatedUser = users.users.find(user => user.id === id);
+    reply
+      .code(200)
+      .header('Content-Type', 'application/json; charset=utf-8')
+      .send(updatedUser);
+  }
 
   reply
-    .code(200)
+    .code(404)
     .header('Content-Type', 'application/json; charset=utf-8')
-    .send(updatedUser);
+    .send({ message: 'User not found' });
 
-  myLogger.info(loggerMessages.updateItem(req.method ,req.url,req.params.id, 200, req.body))
+  myLogger.info(loggerMessages.updateItem(req.method, req.url, req.params.id, 200, req.body));
 };
