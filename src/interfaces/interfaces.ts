@@ -66,6 +66,7 @@ export type BoardReq = FastifyRequest<{
 export type LoginReq = FastifyRequest<{
   Body: User;
   Params: {
+    id: string;
     login: string;
     password: string;
   }

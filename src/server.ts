@@ -7,8 +7,12 @@ const app = require('fastify')({
   logger: false,
   pluginTimeout: 100000,
   prettyPrint: true});
-const { PORT } = require('./common/config');
 
+const { PORT, JWT_SECRET_KEY } = require('./common/config');
+
+app.register(require('fastify-jwt'), {
+  secret: JWT_SECRET_KEY
+})
 
 app.register(require('fastify-swagger'), {
   exposeRoute: true,
@@ -56,6 +60,7 @@ const start = async (): Promise<void> => {
 
 start();
 
+export default app
 
 
 
