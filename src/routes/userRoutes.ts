@@ -44,7 +44,6 @@ const postUserOpts = {
       200: User
     }
   },
-  preHandler:  [checkAuth],
   handler: addUser
 };
 
@@ -66,7 +65,6 @@ const deleteUserOpts = {
 function userRoutes(app: FastifyInstance, options: object, done: () => void) {
   // Get all users
   app.get('/users', getUsersOpts);
-
 
   app.get('/users/:id', getSingleUserOpts)
 

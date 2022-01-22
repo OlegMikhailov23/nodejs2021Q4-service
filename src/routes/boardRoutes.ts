@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { Board } from '../models/models';
+import { checkAuth } from '../middleware/checkauth';
 
 const { getBoards, addBoard, getBoard, updateBoard, deleteBoard } = require('../controllers/boardsControllerr');
 
@@ -9,6 +10,7 @@ const getBoardsOpts = {
       201: Board
     }
   },
+  preHandler:  [checkAuth],
   handler: getBoards
 };
 
@@ -38,6 +40,7 @@ const postBoardOpts = {
   response: {
     200: Board
   },
+  preHandler:  [checkAuth],
   handler: addBoard
 };
 
@@ -47,6 +50,7 @@ const getSingleBoardOpts = {
       201: Board
     }
   },
+  preHandler:  [checkAuth],
   handler: getBoard
 };
 
@@ -56,6 +60,7 @@ const updateBoardOpts = {
       200: Board
     }
   },
+  preHandler:  [checkAuth],
   handler: updateBoard
 };
 
@@ -70,6 +75,7 @@ const deleteBoardOpts = {
       }
     }
   },
+  preHandler:  [checkAuth],
   handler: deleteBoard
 };
 

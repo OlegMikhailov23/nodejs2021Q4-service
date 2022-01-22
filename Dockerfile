@@ -10,7 +10,6 @@ RUN npm ci --only=prod && npm cache clean --force
 
 RUN npm install global nodemon
 
-RUN npm install
 
 COPY . .
 

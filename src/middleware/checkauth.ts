@@ -3,9 +3,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET_KEY } = require('../common/config');
 
-
-// @ts-ignore
-export const checkAuth = async (req: FastifyRequest, reply: FastifyReply, next) => {
+export const checkAuth = async (req: FastifyRequest, reply: FastifyReply, next: Function) => {
   const {headers} = req.raw
   const authHeader = headers.authorization;
 
@@ -20,8 +18,7 @@ export const checkAuth = async (req: FastifyRequest, reply: FastifyReply, next) 
         .send('Unauthorized user')
     } else {
       try {
-        const res = jwt.verify(token, JWT_SECRET_KEY);
-        console.log(res)
+        jwt.verify(token, JWT_SECRET_KEY);
       } catch (e) {
         reply.status(401).send('Unauthorized user')
       }
