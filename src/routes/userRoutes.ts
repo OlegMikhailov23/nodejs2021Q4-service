@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { getUsers, addUser, getUser, deleteUser, updateUser } from '../controllers/usersController';
 import { User} from '../models/models'
-
+import { checkAuth } from '../middleware/checkauth';
 
 const getUsersOpts = {
   schema: {
@@ -9,6 +9,7 @@ const getUsersOpts = {
       201: User
     }
   },
+  preHandler:  [checkAuth],
   handler: getUsers
 };
 
@@ -18,6 +19,7 @@ const getSingleUserOpts = {
       201: User
     }
   },
+  preHandler:  [checkAuth],
   handler: getUser
 };
 
@@ -27,6 +29,7 @@ const updateUserOpts = {
       200: User
     }
   },
+  preHandler:  [checkAuth],
   handler: updateUser
 };
 
@@ -41,6 +44,7 @@ const postUserOpts = {
       200: User
     }
   },
+  preHandler:  [checkAuth],
   handler: addUser
 };
 
@@ -55,6 +59,7 @@ const deleteUserOpts = {
       }
     }
   },
+  preHandler:  [checkAuth],
   handler: deleteUser
 }
 

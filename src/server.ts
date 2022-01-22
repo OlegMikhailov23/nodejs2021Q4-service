@@ -1,18 +1,14 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { createConnection } from 'typeorm';
 import ConnectionOptions from './common/ormconfig';
 import { myLogger } from './logger';
+const { PORT } = require('./common/config');
 
-const app = require('fastify')({
+const app: FastifyInstance = require('fastify')({
   logger: false,
   pluginTimeout: 100000,
   prettyPrint: true});
 
-const { PORT, JWT_SECRET_KEY } = require('./common/config');
-
-app.register(require('fastify-jwt'), {
-  secret: JWT_SECRET_KEY
-})
 
 app.register(require('fastify-swagger'), {
   exposeRoute: true,
@@ -30,6 +26,7 @@ app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply)
   // Send error response
   reply.status(500).send({ ok: false, message: 'Something goes wrong:(' })
 })
+
 
 app.register(require('./routes/loginRoute'));
 app.register(require('./routes/userRoutes'));
