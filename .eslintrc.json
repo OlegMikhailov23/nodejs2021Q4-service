@@ -39,6 +39,7 @@
   "rules": {
     "class-methods-use-this": "warn",
     "import/extensions": "off",
+    "import/no-cycle": "off",
     "linebreak-style": "off",
     "node/no-unsupported-features/es-syntax": "off",
     "no-await-in-loop": "warn",

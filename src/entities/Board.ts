@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity , OneToMany } from 'typeorm';
+import ColumnEntity from './Column';
 
 @Entity('board')
-export class Board extends BaseEntity{
+export class Board extends BaseEntity {
 
   @PrimaryGeneratedColumn('uuid')
 
@@ -11,6 +12,6 @@ export class Board extends BaseEntity{
 
   title: string;
 
-  @Column('json')
-  columns: string
+  @OneToMany(() => ColumnEntity, (column) => column.board, { cascade: true })
+  columns: ColumnEntity[];
 }

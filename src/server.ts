@@ -2,7 +2,6 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { createConnection } from 'typeorm';
 import ConnectionOptions from './common/ormconfig';
 import { myLogger } from './logger';
-// import { createDefaultUser } from './utils/createDefaultUser';
 
 const app: FastifyInstance = require('fastify')({
   logger: false,
@@ -48,7 +47,6 @@ const start = async (): Promise<void> => {
     await app.listen(PORT, '0.0.0.0');
     console.log(`Hello! Server is running on ${PORT} port`);
     myLogger.info(`Hello! Server is running on http://localhost:${PORT}`);
-    // await createDefaultUser();
   } catch (e) {
     app.log.fatal(e);
     myLogger.error(new Error('Oops! application felt-down with error ...'));

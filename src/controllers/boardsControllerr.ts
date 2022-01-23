@@ -6,6 +6,7 @@ import { loggerMessages, myLogger } from '../logger';
 import { Board } from '../entities/Board';
 import { Task } from '../entities/Task';
 
+const BOARD_RELATIONS = { relations: ['columns'] };
 /**
  * Returns all boards from data base with status code 200.
  *
@@ -17,17 +18,10 @@ import { Task } from '../entities/Task';
 
 export const getBoards = async (req: FastifyRequest, reply: FastifyReply): Promise<void> => {
   const boardRepository = getRepository(Board);
-  const boards = await boardRepository.find({ select: ['id', 'title', 'columns'] });
-  const readableBoards = boards.map((it) => (
-    {
-      id: it.id,
-      title: it.title,
-      columns: JSON.parse(it.columns)
-    }
-  ));
+  const boards = await boardRepository.find(BOARD_RELATIONS);
   reply
     .code(200)
-    .send(readableBoards);
+    .send(boards);
 
   myLogger.info(loggerMessages.getAll(req.method, req.url, 200));
 };
@@ -58,7 +52,8 @@ export const addBoard = async (req: BoardReq, reply: FastifyReply): Promise<void
 
   board.id = boardId;
   board.title = title;
-  board.columns = JSON.stringify(columnsWithId);
+  // @ts-ignore
+  board.columns = columnsWithId;
   await boardRepository.save(board);
 
   reply
@@ -81,10 +76,9 @@ export const addBoard = async (req: BoardReq, reply: FastifyReply): Promise<void
 export const getBoard = async (req: BoardReq, reply: FastifyReply): Promise<void> => {
   const { id } = req.params;
   const boardRepository = getRepository(Board);
-  const board = await boardRepository.findOne(id);
+  const board = await boardRepository.findOne(id, BOARD_RELATIONS);
 
   if (board) {
-    board.columns = JSON.parse(board.columns);
     reply
       .code(200)
       .header('Content-Type', 'application/json; charset=utf-8')
@@ -115,16 +109,15 @@ export const updateBoard = async (req: BoardReq, reply: FastifyReply): Promise<v
 
   const boardRepository = getRepository(Board);
 
-
-  const board = await boardRepository.findOne(id);
-
+  const board = await boardRepository.findOne(id, BOARD_RELATIONS);
   if (board) {
-    const updatedBoard = boardRepository.merge(board, { title }, { columns: JSON.stringify(columns) });
+    const updatedBoard = { id, title, columns };
     await boardRepository.save(updatedBoard);
+    const savedBoard = await boardRepository.findOne(id, BOARD_RELATIONS);
     reply
       .code(200)
       .header('Content-Type', 'application/json; charset=utf-8')
-      .send(updatedBoard);
+      .send(savedBoard);
   }
 
   reply
