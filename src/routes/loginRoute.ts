@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { User } from '../models/models';
+// import { User } from '../models/models';
 import { loginUser } from '../controllers/loginContoller';
 
 const loginUserOpts = {
@@ -12,9 +12,7 @@ const loginUserOpts = {
         password: {type: 'string'}
       },
     },
-    response: {
-      200: User
-    }
+
   },
   handler: loginUser
 };

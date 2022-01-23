@@ -119,7 +119,7 @@ export const updateBoard = async (req: BoardReq, reply: FastifyReply): Promise<v
   const board = await boardRepository.findOne(id);
 
   if (board) {
-    const updatedBoard = boardRepository.merge(board, { title: title }, { columns: JSON.stringify(columns) });
+    const updatedBoard = boardRepository.merge(board, { title }, { columns: JSON.stringify(columns) });
     await boardRepository.save(updatedBoard);
     reply
       .code(200)

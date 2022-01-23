@@ -17,7 +17,7 @@ import { loggerMessages, myLogger } from '../logger';
 export const getTasks = async (req: TaskReq, reply: FastifyReply): Promise<void> => {
   const { boardId } = req.params;
   const taskRepository = getRepository(Task);
-  const currentTasks = await taskRepository.find({ where: { boardId: boardId } });
+  const currentTasks = await taskRepository.find({ where: { boardId } });
   reply.send(currentTasks);
 
   myLogger.info(loggerMessages.getAll(req.method, req.url, 200));

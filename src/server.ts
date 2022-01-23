@@ -2,13 +2,13 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { createConnection } from 'typeorm';
 import ConnectionOptions from './common/ormconfig';
 import { myLogger } from './logger';
-const { PORT } = require('./common/config');
+import { createDefaultUser } from './utils/createDefaultUser';
 
 const app: FastifyInstance = require('fastify')({
   logger: false,
   pluginTimeout: 100000,
   prettyPrint: true});
-
+const { PORT } = require('./common/config');
 
 app.register(require('fastify-swagger'), {
   exposeRoute: true,
@@ -43,11 +43,12 @@ app.register(require('./routes/taskRoutes'));
 const start = async (): Promise<void> => {
   try {
     const connection  = await createConnection(ConnectionOptions);
-    connection.runMigrations();
+    await connection.runMigrations();
     myLogger.info(`Connected to PSG!`)
     await app.listen(PORT, '0.0.0.0');
     console.log(`Hello! Server is running on ${PORT} port`);
     myLogger.info(`Hello! Server is running on http://localhost:${PORT}`);
+    await createDefaultUser();
   } catch (e) {
     app.log.fatal(e);
     myLogger.error(new Error('Oops! application felt-down with error ...'));

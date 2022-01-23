@@ -44,6 +44,7 @@ const postUserOpts = {
       200: User
     }
   },
+  preHandler:  [checkAuth],
   handler: addUser
 };
 
