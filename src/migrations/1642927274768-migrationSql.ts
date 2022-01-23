@@ -1,4 +1,5 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
+import bcrypt from 'bcryptjs';
 
 export class migrationSql1642927274768 implements MigrationInterface {
     name = 'migrationSql1642927274768'
@@ -10,6 +11,12 @@ export class migrationSql1642927274768 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "task" ADD CONSTRAINT "FK_d88edac9d7990145ff6831a7bb3" FOREIGN KEY ("boardId") REFERENCES "board"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "task" ADD CONSTRAINT "FK_f316d3fe53497d4d8a2957db8b9" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
 
+        const adminPasswordHash = bcrypt.hashSync('admin', 10);
+
+        await queryRunner.query(
+          `INSERT INTO "user" (name, login, password) VALUES ($1, $1, $2);`,
+          ['admin', adminPasswordHash]
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
