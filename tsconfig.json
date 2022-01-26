@@ -1,21 +1,22 @@
 {
-  "extends": "fastify-tsconfig",
   "compilerOptions": {
-    "strictPropertyInitialization": false, // for typeorm
-    "experimentalDecorators": true, // for typeorm
-    "strict": true,
-    "outDir": "dist",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
+    "module": "commonjs",
+    "allowJs": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
     "sourceMap": true,
-    "rootDir": "./src",
-    "resolveJsonModule": true,
-    "listEmittedFiles": true
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false
+  }
 }
