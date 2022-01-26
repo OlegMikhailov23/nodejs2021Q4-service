@@ -1,14 +1,13 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { createConnection } from 'typeorm';
 import ConnectionOptions from './common/ormconfig';
 import { myLogger } from './logger';
 
-const app = require('fastify')({
+const app: FastifyInstance = require('fastify')({
   logger: false,
   pluginTimeout: 100000,
   prettyPrint: true});
 const { PORT } = require('./common/config');
-
 
 app.register(require('fastify-swagger'), {
   exposeRoute: true,
@@ -27,6 +26,8 @@ app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply)
   reply.status(500).send({ ok: false, message: 'Something goes wrong:(' })
 })
 
+
+app.register(require('./routes/loginRoute'));
 app.register(require('./routes/userRoutes'));
 app.register(require('./routes/boardRoutes'));
 app.register(require('./routes/taskRoutes'));
@@ -41,7 +42,7 @@ app.register(require('./routes/taskRoutes'));
 const start = async (): Promise<void> => {
   try {
     const connection  = await createConnection(ConnectionOptions);
-    connection.runMigrations();
+    await connection.runMigrations();
     myLogger.info(`Connected to PSG!`)
     await app.listen(PORT, '0.0.0.0');
     console.log(`Hello! Server is running on ${PORT} port`);
@@ -55,6 +56,7 @@ const start = async (): Promise<void> => {
 
 start();
 
+export default app
 
 
 

@@ -5,6 +5,7 @@ import { UserReq } from '../interfaces/interfaces';
 import { myLogger, loggerMessages } from '../logger';
 import { User } from '../entities/User';
 import { Task } from '../entities/Task';
+import { hashPassword } from '../utils/hashUtil';
 
 
 /**
@@ -74,11 +75,12 @@ export const getUser = async (req: UserReq, reply: FastifyReply): Promise<void> 
 export const addUser = async (req: UserReq, reply: FastifyReply): Promise<void> => {
   const { name, login, password } = req.body;
   const userRepository = getRepository(User);
+  const hashedPassword = await hashPassword(password);
   const user = await userRepository.create();
   user.id = uuidv4();
   user.name = name;
   user.login = login;
-  user.password = password;
+  user.password = hashedPassword;
   await userRepository.save(user);
 
   const userWithoutPassword = {

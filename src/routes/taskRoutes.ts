@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 
 import{ getTasks, addTask, getTask, updateTask, deleteTask } from '../controllers/tasksController';
+import { checkAuth } from '../middleware/checkauth';
 
 
 const { Task } = require('../models/models');
@@ -11,6 +12,7 @@ const getTasksOpts = {
       201: Task
     }
   },
+  preHandler:  [checkAuth],
   handler: getTasks
 };
 
@@ -25,6 +27,7 @@ const postTaskOpts = {
   response: {
     200: Task
   },
+  preHandler:  [checkAuth],
   handler: addTask
 }
 
@@ -34,6 +37,7 @@ const getSingleTaskOpts = {
       201: Task
     }
   },
+  preHandler:  [checkAuth],
   handler: getTask
 };
 
@@ -43,6 +47,7 @@ const updateTaskOpts = {
       200: Task
     }
   },
+  preHandler:  [checkAuth],
   handler: updateTask
 };
 
@@ -57,6 +62,7 @@ const deleteTaskOpts = {
       }
     }
   },
+  preHandler:  [checkAuth],
   handler: deleteTask
 }
 

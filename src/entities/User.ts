@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { BaseEntity } from 'typeorm/index';
+import { Entity, PrimaryGeneratedColumn, Column , BaseEntity } from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
@@ -16,7 +15,7 @@ export class User extends BaseEntity {
 
   login: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 200 })
 
   password: string;
 }

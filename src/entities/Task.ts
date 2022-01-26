@@ -1,7 +1,6 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, ManyToOne, PrimaryGeneratedColumn, Column , BaseEntity } from 'typeorm';
 import { User } from './User';
 import { Board } from './Board';
-import { BaseEntity } from 'typeorm/index';
 
 @Entity()
 export class Task extends BaseEntity {
