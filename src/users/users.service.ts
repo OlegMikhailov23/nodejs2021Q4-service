@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from "../interfaces";
+import { tasks } from "../fake-db";
 
 @Injectable()
 export class UsersService {
@@ -73,15 +74,15 @@ export class UsersService {
   }
 
   remove(id: string) {
-    // tasks.tasks = tasks.tasks.map(task => (task.userId === id ? {
-    //   id: task.id,
-    //   title: task.title,
-    //   order: task.order,
-    //   description: task.description,
-    //   userId: null,
-    //   boardId: task.boardId,
-    //   columnId: task.columnId
-    // } : task));
+    tasks.tasks = tasks.tasks.map(task => (task.userId === id ? {
+      id: task.id,
+      title: task.title,
+      order: task.order,
+      description: task.description,
+      userId: null,
+      boardId: task.boardId,
+      columnId: task.columnId
+    } : task));
 
     this.userStorage = this.userStorage.filter(it => it.id !== id);
 

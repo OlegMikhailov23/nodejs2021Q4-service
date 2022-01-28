@@ -3,6 +3,7 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Board } from "../interfaces";
+import { tasks } from "../fake-db";
 
 @Injectable()
 export class BoardsService {
@@ -60,6 +61,8 @@ export class BoardsService {
 
   remove(id: string) {
     this.boardsStorage = this.boardsStorage.filter(it => it.id !== id);
+    tasks.tasks = tasks.tasks?.filter(it => it.boardId !== id);
+
     return `This action removes a #${id} board`;
   }
 }
