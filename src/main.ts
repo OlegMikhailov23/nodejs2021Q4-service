@@ -2,12 +2,11 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
+import { ValidationPipe } from "@nestjs/common";
 
 import { PORT, USE_FASTIFY } from "./common/config";
 
 const DEFAULT_PORT = 3000;
-
-console.log(USE_FASTIFY);
 
 async function start() {
   const config = new DocumentBuilder()
@@ -25,7 +24,7 @@ async function start() {
       logger: ['log', 'warn']
     });
   }
-
+  app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
