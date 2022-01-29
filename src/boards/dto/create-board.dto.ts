@@ -1,5 +1,5 @@
-import { Column } from "../../interfaces";
-import { IsNotEmpty } from "class-validator";
+import { Column } from '../../interfaces';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateBoardDto {
   id: string;

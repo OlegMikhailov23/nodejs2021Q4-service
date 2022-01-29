@@ -1,15 +1,30 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Req, Res } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { Response, Request } from 'express';
+import { Response } from 'express';
+import { TaskReq } from '../interfaces';
 
 @Controller('boards/:boardId/tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  create(@Param('boardId') boardId: string, @Body() createTaskDto: CreateTaskDto, @Req() req: Request) {
+  create(
+    @Param('boardId') boardId: string,
+    @Body() createTaskDto: CreateTaskDto,
+    @Req() req: TaskReq,
+  ) {
     return this.tasksService.create(boardId, createTaskDto, req);
   }
 
@@ -24,7 +39,11 @@ export class TasksController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto, @Req() req: Request) {
+  update(
+    @Param('id') id: string,
+    @Body() updateTaskDto: UpdateTaskDto,
+    @Req() req: TaskReq,
+  ) {
     return this.tasksService.update(id, updateTaskDto, req);
   }
 

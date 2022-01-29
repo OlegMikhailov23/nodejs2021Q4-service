@@ -1,4 +1,4 @@
-import { Board, Task, User } from "../interfaces";
+import { Board, Task, User } from '../interfaces';
 
 export interface UserCollection {
   id: string;
@@ -21,13 +21,13 @@ export interface TaskCollection {
 
 export const users: UserCollection = {
   id: 'users',
-  users: []
+  users: [],
 };
 export const boards: BoardCollection = {
   id: 'boards',
-  boards: []
+  boards: [],
 };
 export const tasks: TaskCollection = {
   id: 'tasks',
-  tasks: []
+  tasks: [],
 };
