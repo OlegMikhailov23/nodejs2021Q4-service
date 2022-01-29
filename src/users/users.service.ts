@@ -1,4 +1,4 @@
-import { Body, Injectable, Req } from "@nestjs/common";
+import { Body, Injectable, Req, HttpStatus } from "@nestjs/common";
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { v4 as uuidv4 } from 'uuid';
@@ -46,9 +46,8 @@ export class UsersService {
 
     if (!user) {
       res
-        .code(404)
-        .header('Content-Type', 'application/json; charset=utf-8')
-        .send({ message: `User ${id} does not exist` });
+        .status(HttpStatus.NOT_FOUND)
+        .send({ message: `User ${id} does not exist` })
     }
 
     const userWithoutPassword = {
@@ -58,8 +57,7 @@ export class UsersService {
     };
 
     res
-      .code(200)
-      .header('Content-Type', 'application/json; charset=utf-8')
+      .status(HttpStatus.OK)
       .send(userWithoutPassword);
   }
 

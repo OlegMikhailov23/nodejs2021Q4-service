@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { v4 as uuidv4 } from 'uuid';
@@ -40,14 +40,12 @@ export class BoardsService {
 
     if (!board) {
       res
-        .code(404)
-        .header('Content-Type', 'application/json; charset=utf-8')
+        .status(HttpStatus.NOT_FOUND)
         .send({ message: `Board ${id} does not exist` });
     }
 
     res
-      .code(200)
-      .header('Content-Type', 'application/json; charset=utf-8')
+      .status(HttpStatus.OK)
       .send(board);
   }
 

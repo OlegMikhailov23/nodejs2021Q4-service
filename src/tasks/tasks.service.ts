@@ -1,4 +1,4 @@
-import { Body, Injectable, Req } from "@nestjs/common";
+import { Body, HttpStatus, Injectable, Req } from "@nestjs/common";
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { v4 as uuidv4 } from 'uuid';
@@ -34,14 +34,12 @@ export class TasksService {
 
     if (!task) {
       res
-        .code(404)
-        .header('Content-Type', 'application/json; charset=utf-8')
+        .status(HttpStatus.NOT_FOUND)
         .send({ message: `Task ${id} does not exist` });
     }
 
     res
-      .code(200)
-      .header('Content-Type', 'application/json; charset=utf-8')
+      .status(HttpStatus.OK)
       .send(task);
   }
 

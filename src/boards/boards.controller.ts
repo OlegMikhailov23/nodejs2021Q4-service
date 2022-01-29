@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, Put } from
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
+import { Response } from 'express';
 
 @Controller('boards')
 export class BoardsController {
@@ -18,7 +19,7 @@ export class BoardsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Res() res) {
+  findOne(@Param('id') id: string, @Res() res: Response) {
     return this.boardsService.findOne(id, res);
   }
 
