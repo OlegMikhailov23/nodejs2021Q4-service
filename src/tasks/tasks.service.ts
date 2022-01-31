@@ -52,8 +52,8 @@ export class TasksService {
     const { title, order, description, userId, boardId, columnId } = req.body;
 
     tasks.tasks = tasks.tasks.map((task) =>
-      task.id === id
-        ? {
+      task.id === id ?
+         {
             id,
             title,
             order,

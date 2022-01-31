@@ -59,6 +59,7 @@ export class BoardsService {
 
   remove(id: string) {
     this.boardsStorage = this.boardsStorage.filter((it) => it.id !== id);
+    // @ts-ignore
     tasks.tasks = tasks.tasks?.filter((it) => it.boardId !== id);
 
     return `This action removes a #${id} board`;

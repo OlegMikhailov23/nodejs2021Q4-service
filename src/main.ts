@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import ConnectionOptions from './common/ormconfig';
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -9,10 +10,13 @@ import { ValidationPipe, Logger } from '@nestjs/common';
 
 import { PORT, USE_FASTIFY } from './common/config';
 import { getPlatform } from './utils';
+import { createConnection } from "typeorm";
 
 const DEFAULT_PORT = 3000;
 
 async function start() {
+  const connection  = await createConnection(ConnectionOptions);
+  await connection.runMigrations();
   const config = new DocumentBuilder()
     .setTitle('nodejs2021q4-service')
     .setVersion('1.0')
