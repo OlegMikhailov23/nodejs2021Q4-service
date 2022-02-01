@@ -10,6 +10,9 @@ export default class ColumnEntity extends  BaseEntity {
 
   title: string;
 
-  @ManyToOne(() => Board, (board) => board.columns, {onDelete: 'CASCADE'})
+  @Column('integer')
+  order: number;
+
+  @ManyToOne(() => Board, (board) => board.columns, {onDelete: 'CASCADE', eager: true})
   board: Board
 }

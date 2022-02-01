@@ -18,8 +18,8 @@ export default {
   entities: [
     'dist/entities/*.js',
   ],
-  migrations: ['dist/migrations/*.js'],
+  migrations: ["dist/migrations/*.js"],
   cli: {
-    migrationsDir: 'dist/migrations',
+    migrationsDir: 'src/migrations',
   },
 } as ConnectionOptions;

@@ -28,15 +28,15 @@ export class TasksController {
     return this.tasksService.create(boardId, createTaskDto, req);
   }
 
-  @Get()
-  findAll(@Param('boardId') boardId: string) {
-    return this.tasksService.findAll(boardId);
-  }
+  // @Get()
+  // findAll(@Param('boardId') boardId: string) {
+  //   return this.tasksService.findAll(boardId);
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string, @Res() res: Response) {
-    return this.tasksService.findOne(id, res);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string, @Res() res: Response) {
+  //   return this.tasksService.findOne(id, res);
+  // }
 
   @Put(':id')
   update(
@@ -47,8 +47,8 @@ export class TasksController {
     return this.tasksService.update(id, updateTaskDto, req);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tasksService.remove(id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.tasksService.remove(id);
+  // }
 }

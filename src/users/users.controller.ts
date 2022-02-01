@@ -14,37 +14,38 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 import { UserReq } from '../interfaces';
+import {User} from '../entities/User'
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto, @Req() req: UserReq) {
-    return this.usersService.create(createUserDto, req);
+  async create(@Body() createUserDto: CreateUserDto): Promise<Partial <User>>  {
+    return this.usersService.create(createUserDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Res() res: Response) {
+  async findOne(@Param('id') id: string, @Res() res: Response): Promise<void> {
     return this.usersService.findOne(id, res);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
     @Req() req: UserReq,
-  ) {
+  ): Promise<User> {
     return this.usersService.update(id, updateUserDto, req);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<string> {
     return this.usersService.remove(id);
   }
 }

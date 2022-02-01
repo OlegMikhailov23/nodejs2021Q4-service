@@ -14,37 +14,37 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { Response, Request } from 'express';
 import { BoardReq } from '../interfaces';
+import { Board } from "../entities/Board";
 
 @Controller('boards')
 export class BoardsController {
   constructor(private readonly boardsService: BoardsService) {}
 
   @Post()
-  create(@Body() createBoardDto: CreateBoardDto, @Req() req: BoardReq) {
+  async create(@Body() createBoardDto: CreateBoardDto, @Req() req: BoardReq): Promise<Board> {
     return this.boardsService.create(createBoardDto, req);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<Board[]> {
     return this.boardsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Res() res: Response) {
+  async findOne(@Param('id') id: string, @Res() res: Response): Promise<void> {
     return this.boardsService.findOne(id, res);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
-    @Body() updateBoardDto: UpdateBoardDto,
-    @Req() req: Request,
-  ) {
-    return this.boardsService.update(id, updateBoardDto, req);
+    @Body() updateBoardDto: UpdateBoardDto
+  ): Promise<Board> {
+    return this.boardsService.update(id, updateBoardDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<string> {
     return this.boardsService.remove(id);
   }
 }

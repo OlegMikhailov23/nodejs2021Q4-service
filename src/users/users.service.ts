@@ -2,46 +2,43 @@ import { Body, Injectable, Req, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { User, UserReq } from '../interfaces';
-import { tasks } from '../fake-db';
+import { UserReq } from '../interfaces';
+import { User } from '../entities/User'
 import { Response } from 'express';
+import { getRepository } from "typeorm";
+import { hashPassword } from "../utils";
+import { Task } from "../entities/Task";
 
 @Injectable()
 export class UsersService {
-  userStorage: User[] = [];
 
-  create(@Body() createUserDto: CreateUserDto, @Req() req: UserReq) {
-    const { name, login, password } = req.body;
-
-    const user = {
-      id: uuidv4(),
-      name,
-      login,
-      password,
-    };
-    this.userStorage = [...this.userStorage, user];
+  async create(@Body() createUserDto: CreateUserDto): Promise<Partial <User>> {
+    const userRepository = getRepository(User);
+    const hashedPassword = await hashPassword(createUserDto.password);
+    const user = await userRepository.create();
+    createUserDto.id = uuidv4();
+    createUserDto.password = hashedPassword;
+    await userRepository.save(createUserDto);
 
     const userWithoutPassword = {
-      id: user.id,
-      name: user.name,
-      login: user.login,
+      id: createUserDto.id,
+      name: createUserDto.name,
+      login: createUserDto.login
     };
 
     return userWithoutPassword;
   }
 
-  findAll() {
-    const usersWithoutPassword = this.userStorage.map((user) => ({
-      name: user.name,
-      login: user.login,
-      id: user.id,
-    }));
+  async findAll(): Promise<User[]> {
+    const userRepository = getRepository(User);
+    const users = await userRepository.find({ select: ['id', 'name', 'login'] });
 
-    return usersWithoutPassword;
+    return users;
   }
 
-  findOne(id: string, res: Response) {
-    const user = this.userStorage.find((it) => it.id === id);
+  async findOne(id: string, res: Response): Promise<void> {
+    const userRepository = getRepository(User);
+    const user = await userRepository.findOne(id);
 
     if (!user) {
       res
@@ -58,34 +55,30 @@ export class UsersService {
     res.status(HttpStatus.OK).send(userWithoutPassword);
   }
 
-  update(id: string, updateUserDto: UpdateUserDto, req: UserReq) {
-    const { name, login, password } = req.body;
+  async update(id: string, updateUserDto: UpdateUserDto, req: UserReq): Promise<User> {
+    const { password } = req.body;
+    const userRepository = getRepository(User);
+    const user = await userRepository.findOne(id);
+    req.body.password = await hashPassword(password);
 
-    this.userStorage = this.userStorage.map((user) =>
-      user.id === id ? { id, name, login, password } : user,
-    );
-
-    const updatedUser = this.userStorage.find((user) => user.id === id);
+    const updatedUser = userRepository.merge(user, req.body);
+    await userRepository.save(updatedUser);
 
     return updatedUser;
   }
 
-  remove(id: string) {
-    tasks.tasks = tasks.tasks.map((task) =>
-      task.userId === id
-        ? {
-            id: task.id,
-            title: task.title,
-            order: task.order,
-            description: task.description,
-            userId: null,
-            boardId: task.boardId,
-            columnId: task.columnId,
-          }
-        : task,
-    );
+  async remove(id: string): Promise<string> {
+    const userRepository = getRepository(User);
+    const taskRepository = getRepository(Task);
+    const tasks = await taskRepository.find({ userId: id });
 
-    this.userStorage = this.userStorage.filter((it) => it.id !== id);
+    for (let i = 0; i < tasks.length; i += 1) {
+      const task = tasks[i];
+      const updatedTask = taskRepository.merge(task, { userId: null });
+      await taskRepository.save(updatedTask);
+    }
+
+    await userRepository.delete(id);
 
     return `This action removes a #${id} user`;
   }

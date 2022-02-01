@@ -30,23 +30,23 @@ export class TasksService {
     return task;
   }
 
-  findAll(boardId: string) {
-    const currentTasks = tasks.tasks.filter((it) => it.boardId === boardId);
+  // findAll(boardId: string) {
+  //   const currentTasks = tasks.tasks.filter((it) => it.boardId === boardId);
+  //
+  //   return currentTasks;
+  // }
 
-    return currentTasks;
-  }
-
-  findOne(id: string, res: Response) {
-    const task = tasks.tasks.find((it) => it.id === id);
-
-    if (!task) {
-      res
-        .status(HttpStatus.NOT_FOUND)
-        .send({ message: `Task ${id} does not exist` });
-    }
-
-    res.status(HttpStatus.OK).send(task);
-  }
+  // findOne(id: string, res: Response) {
+  //   const task = tasks.tasks.find((it) => it.id === id);
+  //
+  //   if (!task) {
+  //     res
+  //       .status(HttpStatus.NOT_FOUND)
+  //       .send({ message: `Task ${id} does not exist` });
+  //   }
+  //
+  //   res.status(HttpStatus.OK).send(task);
+  // }
 
   update(id: string, updateTaskDto: UpdateTaskDto, req: TaskReq) {
     const { title, order, description, userId, boardId, columnId } = req.body;
@@ -70,8 +70,8 @@ export class TasksService {
     return updatedTask;
   }
 
-  remove(id: string) {
-    tasks.tasks = tasks.tasks.filter((it) => it.id !== id);
-    return `This action removes a #${id} task`;
-  }
+  // remove(id: string) {
+  //   tasks.tasks = tasks.tasks.filter((it) => it.id !== id);
+  //   return `This action removes a #${id} task`;
+  // }
 }

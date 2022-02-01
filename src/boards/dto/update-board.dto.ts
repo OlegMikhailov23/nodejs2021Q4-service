@@ -1,9 +1,9 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateBoardDto } from './create-board.dto';
-import { Column } from '../../interfaces';
+import ColumnEntity from "../../entities/Column";
 
 export class UpdateBoardDto extends PartialType(CreateBoardDto) {
   id: string;
   title: string;
-  columns: Array<Column>;
+  columns: Array<ColumnEntity>;
 }

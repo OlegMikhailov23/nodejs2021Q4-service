@@ -1,5 +1,5 @@
-import { Column } from '../../interfaces';
 import { IsNotEmpty } from 'class-validator';
+import ColumnEntity from "../../entities/Column";
 
 export class CreateBoardDto {
   id: string;
@@ -8,5 +8,5 @@ export class CreateBoardDto {
   title: string;
 
   @IsNotEmpty()
-  columns: Array<Column>;
+  columns: Array<ColumnEntity>;
 }

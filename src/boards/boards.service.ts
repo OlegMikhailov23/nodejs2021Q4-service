@@ -2,41 +2,50 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { Board, BoardReq } from '../interfaces';
+
 import { tasks } from '../fake-db';
 import { Request, Response } from 'express';
+import { Board } from "../entities/Board";
+import { getRepository } from "typeorm";
+import { BoardReq } from "../interfaces";
+import ColumnEntity from "../entities/Column";
+
+const BOARD_RELATIONS = { relations: ['columns'] };
 
 @Injectable()
 export class BoardsService {
-  boardsStorage: Board[] = [];
-
-  create(createBoardDto: CreateBoardDto, req: BoardReq) {
+  async create(createBoardDto: CreateBoardDto, req: BoardReq): Promise<Board> {
     const { title, columns } = req.body;
 
-    // @ts-ignore
-    const columnsWithId = columns.map((column) => ({
-      id: uuidv4(),
-      title: column.title,
-      order: column.order,
-    }));
+    const boardRepository = getRepository(Board);
+    const board = await boardRepository.create();
+    const boardId = uuidv4();
 
-    const board = {
-      id: uuidv4(),
-      title,
-      columns: columnsWithId,
-    };
+    const columnsWithId = columns.map((column: { title: any; order: any; }) => (
+      {
+        id: uuidv4(),
+        title: column.title,
+        order: column.order
+      }
+    ));
 
-    this.boardsStorage = [...this.boardsStorage, board];
+    board.id = boardId;
+    board.title = title;
+    board.columns = columnsWithId;
+    await boardRepository.save(board);
 
     return board;
   }
 
-  findAll() {
-    return this.boardsStorage;
+  async findAll(): Promise<Board[]> {
+    const boardRepository = getRepository(Board);
+    const boards = await boardRepository.find(BOARD_RELATIONS);
+    return boards;
   }
 
-  findOne(id: string, res: Response) {
-    const board = this.boardsStorage.find((it) => it.id === id);
+  async findOne(id: string, res: Response): Promise<void> {
+    const boardRepository = getRepository(Board);
+    const board = await boardRepository.findOne(id, BOARD_RELATIONS);
 
     if (!board) {
       res
@@ -47,20 +56,20 @@ export class BoardsService {
     res.status(HttpStatus.OK).send(board);
   }
 
-  update(id: string, updateBoardDto: UpdateBoardDto, req: Request) {
-    const { title, columns } = req.body;
-    this.boardsStorage = this.boardsStorage.map((board) =>
-      board.id === id ? { id, title, columns } : board,
-    );
-    const updatedBoard = this.boardsStorage.find((board) => board.id === id);
+  async update(id: string, updateBoardDto: UpdateBoardDto): Promise<Board> {
+    const boardRepository = getRepository(Board);
+    const board = await boardRepository.findOne(id);
+    const updatedBoard = await boardRepository.merge(board, updateBoardDto);
+    await boardRepository.save(updatedBoard);
 
     return updatedBoard;
   }
 
-  remove(id: string) {
-    this.boardsStorage = this.boardsStorage.filter((it) => it.id !== id);
-    // @ts-ignore
-    tasks.tasks = tasks.tasks?.filter((it) => it.boardId !== id);
+  async remove(id: string): Promise<string> {
+    const boardRepository = getRepository(Board);
+    // const taskRepository = getRepository(Task);
+    // await taskRepository.delete({ boardId: id });
+    await boardRepository.delete(id);
 
     return `This action removes a #${id} board`;
   }
