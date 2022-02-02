@@ -14,14 +14,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 import { UserReq } from '../interfaces';
-import {User} from '../entities/User'
+import { User } from '../entities/User';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<Partial <User>>  {
+  async create(@Body() createUserDto: CreateUserDto): Promise<Partial<User>> {
     return this.usersService.create(createUserDto);
   }
 

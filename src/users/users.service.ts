@@ -1,21 +1,20 @@
-import { Body, Injectable, Req, HttpStatus } from '@nestjs/common';
+import { Body, Injectable, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { UserReq } from '../interfaces';
-import { User } from '../entities/User'
+import { User } from '../entities/User';
 import { Response } from 'express';
-import { getRepository } from "typeorm";
-import { hashPassword } from "../utils";
-import { Task } from "../entities/Task";
+import { getRepository } from 'typeorm';
+import { hashPassword } from '../utils';
+import { Task } from '../entities/Task';
 
 @Injectable()
 export class UsersService {
-
-  async create(@Body() createUserDto: CreateUserDto): Promise<Partial <User>> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<Partial<User>> {
     const userRepository = getRepository(User);
     const hashedPassword = await hashPassword(createUserDto.password);
-    const user = await userRepository.create();
+    await userRepository.create();
     createUserDto.id = uuidv4();
     createUserDto.password = hashedPassword;
     await userRepository.save(createUserDto);
@@ -23,7 +22,7 @@ export class UsersService {
     const userWithoutPassword = {
       id: createUserDto.id,
       name: createUserDto.name,
-      login: createUserDto.login
+      login: createUserDto.login,
     };
 
     return userWithoutPassword;
@@ -31,7 +30,9 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     const userRepository = getRepository(User);
-    const users = await userRepository.find({ select: ['id', 'name', 'login'] });
+    const users = await userRepository.find({
+      select: ['id', 'name', 'login'],
+    });
 
     return users;
   }
@@ -55,7 +56,11 @@ export class UsersService {
     res.status(HttpStatus.OK).send(userWithoutPassword);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto, req: UserReq): Promise<User> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    req: UserReq,
+  ): Promise<User> {
     const { password } = req.body;
     const userRepository = getRepository(User);
     const user = await userRepository.findOne(id);

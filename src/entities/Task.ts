@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn, Column , BaseEntity } from 'typeorm';
+import {
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+} from 'typeorm';
 import { User } from './User';
 import { Board } from './Board';
 

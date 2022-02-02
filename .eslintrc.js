@@ -21,5 +21,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
     "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/ban-ts-comment": 'off',
   },
 };

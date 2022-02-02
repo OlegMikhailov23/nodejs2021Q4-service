@@ -2,13 +2,11 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { v4 as uuidv4 } from 'uuid';
-
-import { tasks } from '../fake-db';
-import { Request, Response } from 'express';
-import { Board } from "../entities/Board";
-import { getRepository } from "typeorm";
-import { BoardReq } from "../interfaces";
-import ColumnEntity from "../entities/Column";
+import { Response } from 'express';
+import { Board } from '../entities/Board';
+import { getRepository } from 'typeorm';
+import { BoardReq } from '../interfaces';
+import { Task } from '../entities/Task';
 
 const BOARD_RELATIONS = { relations: ['columns'] };
 
@@ -21,13 +19,13 @@ export class BoardsService {
     const board = await boardRepository.create();
     const boardId = uuidv4();
 
-    const columnsWithId = columns.map((column: { title: any; order: any; }) => (
-      {
+    const columnsWithId = columns.map(
+      (column: { title: string; order: number }) => ({
         id: uuidv4(),
         title: column.title,
-        order: column.order
-      }
-    ));
+        order: column.order,
+      }),
+    );
 
     board.id = boardId;
     board.title = title;
@@ -67,8 +65,8 @@ export class BoardsService {
 
   async remove(id: string): Promise<string> {
     const boardRepository = getRepository(Board);
-    // const taskRepository = getRepository(Task);
-    // await taskRepository.delete({ boardId: id });
+    const taskRepository = getRepository(Task);
+    await taskRepository.delete({ boardId: id });
     await boardRepository.delete(id);
 
     return `This action removes a #${id} board`;

@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import ColumnEntity from "../../entities/Column";
+import ColumnEntity from '../../entities/Column';
 
 export class CreateBoardDto {
   id: string;

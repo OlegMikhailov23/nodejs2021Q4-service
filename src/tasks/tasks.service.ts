@@ -1,77 +1,61 @@
-import { Body, HttpStatus, Injectable, Req } from '@nestjs/common';
+import { Body, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { tasks } from '../fake-db';
-import { TaskReq } from '../interfaces';
 import { Response } from 'express';
+import { Task } from '../entities/Task';
+import { getRepository } from 'typeorm';
 
 @Injectable()
 export class TasksService {
-  create(
+  async create(
     boardId: string,
     @Body() createTaskDto: CreateTaskDto,
-    @Req() req: TaskReq,
-  ) {
-    const { title, order, description, userId } = req.body;
-    const task = {
-      id: uuidv4(),
-      title,
-      order,
-      description,
-      userId,
-      boardId,
-      // @ts-ignore
-      columnId: null,
-    };
+  ): Promise<Partial<Task>> {
+    const taskRepository = getRepository(Task);
 
-    tasks.tasks = [...tasks.tasks, task];
+    await taskRepository.create();
+    createTaskDto.boardId = boardId;
+    createTaskDto.id = uuidv4();
+    createTaskDto.columnId = null;
+    await taskRepository.save(createTaskDto);
 
-    return task;
+    return createTaskDto;
   }
 
-  // findAll(boardId: string) {
-  //   const currentTasks = tasks.tasks.filter((it) => it.boardId === boardId);
-  //
-  //   return currentTasks;
-  // }
+  async findAll(boardId: string): Promise<Task[]> {
+    const taskRepository = getRepository(Task);
+    const currentTasks = await taskRepository.find({ where: { boardId } });
 
-  // findOne(id: string, res: Response) {
-  //   const task = tasks.tasks.find((it) => it.id === id);
-  //
-  //   if (!task) {
-  //     res
-  //       .status(HttpStatus.NOT_FOUND)
-  //       .send({ message: `Task ${id} does not exist` });
-  //   }
-  //
-  //   res.status(HttpStatus.OK).send(task);
-  // }
+    return currentTasks;
+  }
 
-  update(id: string, updateTaskDto: UpdateTaskDto, req: TaskReq) {
-    const { title, order, description, userId, boardId, columnId } = req.body;
+  async findOne(id: string, res: Response): Promise<void> {
+    const taskRepository = getRepository(Task);
+    const task = await taskRepository.findOne(id);
 
-    tasks.tasks = tasks.tasks.map((task) =>
-      task.id === id ?
-         {
-            id,
-            title,
-            order,
-            description,
-            userId,
-            boardId,
-            columnId,
-          }
-        : task,
-    );
+    if (!task) {
+      res
+        .status(HttpStatus.NOT_FOUND)
+        .send({ message: `Task ${id} does not exist` });
+    }
 
-    const updatedTask = tasks.tasks.find((task) => task.id === id);
+    res.status(HttpStatus.OK).send(task);
+  }
+
+  async update(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
+    const taskRepository = getRepository(Task);
+    const task = await taskRepository.findOne(id);
+    const updatedTask = taskRepository.merge(task, updateTaskDto);
+
+    await taskRepository.save(updatedTask);
 
     return updatedTask;
   }
 
-  // remove(id: string) {
-  //   tasks.tasks = tasks.tasks.filter((it) => it.id !== id);
-  //   return `This action removes a #${id} task`;
-  // }
+  async remove(id: string): Promise<string> {
+    const taskRepository = getRepository(Task);
+    await taskRepository.delete(id);
+    return `This action removes a #${id} task`;
+  }
 }

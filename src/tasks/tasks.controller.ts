@@ -6,49 +6,46 @@ import {
   Param,
   Delete,
   Put,
-  Req,
   Res,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Response } from 'express';
-import { TaskReq } from '../interfaces';
+import { Task } from '../entities/Task';
 
 @Controller('boards/:boardId/tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  create(
+  async create(
     @Param('boardId') boardId: string,
     @Body() createTaskDto: CreateTaskDto,
-    @Req() req: TaskReq,
-  ) {
-    return this.tasksService.create(boardId, createTaskDto, req);
+  ): Promise<Partial<Task>> {
+    return this.tasksService.create(boardId, createTaskDto);
   }
 
-  // @Get()
-  // findAll(@Param('boardId') boardId: string) {
-  //   return this.tasksService.findAll(boardId);
-  // }
+  @Get()
+  async findAll(@Param('boardId') boardId: string): Promise<Task[]> {
+    return this.tasksService.findAll(boardId);
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string, @Res() res: Response) {
-  //   return this.tasksService.findOne(id, res);
-  // }
+  @Get(':id')
+  async findOne(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    return this.tasksService.findOne(id, res);
+  }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateTaskDto: UpdateTaskDto,
-    @Req() req: TaskReq,
-  ) {
-    return this.tasksService.update(id, updateTaskDto, req);
+  ): Promise<Task> {
+    return this.tasksService.update(id, updateTaskDto);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.tasksService.remove(id);
-  // }
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<string> {
+    return this.tasksService.remove(id);
+  }
 }

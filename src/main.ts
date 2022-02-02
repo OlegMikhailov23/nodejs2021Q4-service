@@ -10,12 +10,12 @@ import { ValidationPipe, Logger } from '@nestjs/common';
 
 import { PORT, USE_FASTIFY } from './common/config';
 import { getPlatform } from './utils';
-import { createConnection } from "typeorm";
+import { createConnection } from 'typeorm';
 
 const DEFAULT_PORT = 3000;
 
 async function start() {
-  const connection  = await createConnection(ConnectionOptions);
+  const connection = await createConnection(ConnectionOptions);
   await connection.runMigrations();
   const config = new DocumentBuilder()
     .setTitle('nodejs2021q4-service')

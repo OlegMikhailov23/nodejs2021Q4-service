@@ -12,16 +12,19 @@ import {
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import { BoardReq } from '../interfaces';
-import { Board } from "../entities/Board";
+import { Board } from '../entities/Board';
 
 @Controller('boards')
 export class BoardsController {
   constructor(private readonly boardsService: BoardsService) {}
 
   @Post()
-  async create(@Body() createBoardDto: CreateBoardDto, @Req() req: BoardReq): Promise<Board> {
+  async create(
+    @Body() createBoardDto: CreateBoardDto,
+    @Req() req: BoardReq,
+  ): Promise<Board> {
     return this.boardsService.create(createBoardDto, req);
   }
 
@@ -38,7 +41,7 @@ export class BoardsController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateBoardDto: UpdateBoardDto
+    @Body() updateBoardDto: UpdateBoardDto,
   ): Promise<Board> {
     return this.boardsService.update(id, updateBoardDto);
   }
