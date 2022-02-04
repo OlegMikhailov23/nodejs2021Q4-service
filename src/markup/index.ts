@@ -6,11 +6,13 @@ export const markUp = () => {
     <html lang="en">
     <head>
         <title>Nodejs service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0,
+                                 maximum-scale=1.0, user-scalable=no">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     </head>
-    <body style="font-family: 'Open Sans', sans-serif ">
+    <body style="font-family: 'Open Sans', sans-serif; margin: 0">
       <div style="display: flex; justify-content: center; flex-direction: column; align-items: center; width: 100vw; height: 100vh; background: #03befc">
           <h1 style="color: #ffffff">Hello, this is awesome Nestjs API</h1>
           <a href=http://localhost:${PORT}/api>Here you find documentation</a>

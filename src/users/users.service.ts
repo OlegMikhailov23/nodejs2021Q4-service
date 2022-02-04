@@ -13,10 +13,10 @@ import { Task } from '../entities/Task';
 export class UsersService {
   async create(@Body() createUserDto: CreateUserDto): Promise<Partial<User>> {
     const userRepository = getRepository(User);
-    const hashedPassword = await hashPassword(createUserDto.password);
+    // const hashedPassword = await hashPassword(createUserDto.password);
     await userRepository.create();
     createUserDto.id = uuidv4();
-    createUserDto.password = hashedPassword;
+    // createUserDto.password = hashedPassword;
     await userRepository.save(createUserDto);
 
     const userWithoutPassword = {
@@ -86,5 +86,11 @@ export class UsersService {
     await userRepository.delete(id);
 
     return `This action removes a #${id} user`;
+  }
+
+  async findOneByLogin(login: string): Promise<User> {
+    const userRepository = getRepository(User);
+    const user = await userRepository.findOne({ where: { login } });
+    return user;
   }
 }

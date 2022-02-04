@@ -11,5 +11,5 @@ export const USE_FASTIFY = process.env.USE_FASTIFY;
 // POSTGRES_USER: process.env.POSTGRES_USER,
 // POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
 // POSTGRES_DB: process.env.POSTGRES_DB,
-// JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 // AUTH_MODE: process.env.AUTH_MODE === 'true'
