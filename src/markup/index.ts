@@ -48,7 +48,7 @@ export const markUp = () => {
             }
         </style>
     </head>
-    <body style="font-family: 'Open Sans', sans-serif; margin: 0;">
+    <body style="font-family: 'Open Sans', sans-serif; margin: 0; overflow: hidden">
       <div style="display: flex; justify-content: center; flex-direction: column; align-items: center; width: 100vw; height: 100vh; background: #03befc; padding: 10px">
           <div style="width: 100px; height: 100px">
             <img src="https://cdn-scalioadmin.s3.amazonaws.com/work/lg/circle-nest-svg-1582871892902.svg" alt=Nestjs />
