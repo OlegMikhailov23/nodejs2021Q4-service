@@ -1,4 +1,4 @@
-import { PORT } from "../common/config";
+import { PORT } from '../common/config';
 
 export const markUp = () => {
   return `

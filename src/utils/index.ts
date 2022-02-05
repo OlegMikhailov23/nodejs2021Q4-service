@@ -22,3 +22,10 @@ export const checkHashedPassword = async (
   const res = await bcrypt.compare(password, hash);
   return res;
 };
+
+export const httpMethods = {
+  POST: 'POST',
+  GET: 'GET',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+};

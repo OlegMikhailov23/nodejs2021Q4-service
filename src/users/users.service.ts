@@ -8,15 +8,18 @@ import { Response } from 'express';
 import { getRepository } from 'typeorm';
 import { hashPassword } from '../utils';
 import { Task } from '../entities/Task';
+import { loggerMessages, myLogger } from '../logger';
 
 @Injectable()
 export class UsersService {
+  url = '/users';
+
   async create(@Body() createUserDto: CreateUserDto): Promise<Partial<User>> {
     const userRepository = getRepository(User);
-    // const hashedPassword = await hashPassword(createUserDto.password);
+    const hashedPassword = await hashPassword(createUserDto.password);
     await userRepository.create();
     createUserDto.id = uuidv4();
-    // createUserDto.password = hashedPassword;
+    createUserDto.password = hashedPassword;
     await userRepository.save(createUserDto);
 
     const userWithoutPassword = {
@@ -24,7 +27,9 @@ export class UsersService {
       name: createUserDto.name,
       login: createUserDto.login,
     };
-
+    myLogger.info(
+      loggerMessages.addItem(this.url, HttpStatus.CREATED, createUserDto),
+    );
     return userWithoutPassword;
   }
 
@@ -33,6 +38,7 @@ export class UsersService {
     const users = await userRepository.find({
       select: ['id', 'name', 'login'],
     });
+    myLogger.info(loggerMessages.getAll(this.url, HttpStatus.OK));
 
     return users;
   }
@@ -42,6 +48,9 @@ export class UsersService {
     const user = await userRepository.findOne(id);
 
     if (!user) {
+      myLogger.warn(
+        loggerMessages.getSingle(this.url, id, HttpStatus.NOT_FOUND),
+      );
       res
         .status(HttpStatus.NOT_FOUND)
         .send({ message: `User ${id} does not exist` });
@@ -53,6 +62,7 @@ export class UsersService {
       id: user?.id,
     };
 
+    myLogger.info(loggerMessages.getSingle(this.url, id, HttpStatus.OK));
     res.status(HttpStatus.OK).send(userWithoutPassword);
   }
 
@@ -69,6 +79,9 @@ export class UsersService {
     const updatedUser = userRepository.merge(user, req.body);
     await userRepository.save(updatedUser);
 
+    myLogger.info(
+      loggerMessages.updateItem(this.url, id, HttpStatus.OK, updateUserDto),
+    );
     return updatedUser;
   }
 
@@ -84,6 +97,7 @@ export class UsersService {
     }
 
     await userRepository.delete(id);
+    myLogger.info(loggerMessages.deleteItem(this.url, id, HttpStatus.OK));
 
     return `This action removes a #${id} user`;
   }
@@ -91,6 +105,7 @@ export class UsersService {
   async findOneByLogin(login: string): Promise<User> {
     const userRepository = getRepository(User);
     const user = await userRepository.findOne({ where: { login } });
+    myLogger.info(loggerMessages.getSingle('none', login, HttpStatus.OK));
     return user;
   }
 }

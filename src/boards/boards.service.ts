@@ -7,11 +7,14 @@ import { Board } from '../entities/Board';
 import { getRepository } from 'typeorm';
 import { BoardReq } from '../interfaces';
 import { Task } from '../entities/Task';
+import { loggerMessages, myLogger } from '../logger';
 
 const BOARD_RELATIONS = { relations: ['columns'] };
 
 @Injectable()
 export class BoardsService {
+  url = '/boards';
+
   async create(createBoardDto: CreateBoardDto, req: BoardReq): Promise<Board> {
     const { title, columns } = req.body;
 
@@ -32,12 +35,18 @@ export class BoardsService {
     board.columns = columnsWithId;
     await boardRepository.save(board);
 
+    myLogger.info(
+      loggerMessages.addItem(this.url, HttpStatus.CREATED, createBoardDto),
+    );
+
     return board;
   }
 
   async findAll(): Promise<Board[]> {
     const boardRepository = getRepository(Board);
     const boards = await boardRepository.find(BOARD_RELATIONS);
+    myLogger.info(loggerMessages.getAll(this.url, HttpStatus.OK));
+
     return boards;
   }
 
@@ -46,10 +55,15 @@ export class BoardsService {
     const board = await boardRepository.findOne(id, BOARD_RELATIONS);
 
     if (!board) {
+      myLogger.warn(
+        loggerMessages.getSingle(this.url, id, HttpStatus.NOT_FOUND),
+      );
+
       res
         .status(HttpStatus.NOT_FOUND)
         .send({ message: `Board ${id} does not exist` });
     }
+    myLogger.info(loggerMessages.getSingle(this.url, id, HttpStatus.OK));
 
     res.status(HttpStatus.OK).send(board);
   }
@@ -57,8 +71,22 @@ export class BoardsService {
   async update(id: string, updateBoardDto: UpdateBoardDto): Promise<Board> {
     const boardRepository = getRepository(Board);
     const board = await boardRepository.findOne(id);
+    if (!board) {
+      myLogger.info(
+        loggerMessages.updateItem(
+          this.url,
+          id,
+          HttpStatus.NOT_FOUND,
+          updateBoardDto,
+        ),
+      );
+      return null;
+    }
     const updatedBoard = await boardRepository.merge(board, updateBoardDto);
     await boardRepository.save(updatedBoard);
+    myLogger.info(
+      loggerMessages.updateItem(this.url, id, HttpStatus.OK, updateBoardDto),
+    );
 
     return updatedBoard;
   }
@@ -68,6 +96,7 @@ export class BoardsService {
     const taskRepository = getRepository(Task);
     await taskRepository.delete({ boardId: id });
     await boardRepository.delete(id);
+    myLogger.info(loggerMessages.deleteItem(this.url, id, HttpStatus.OK));
 
     return `This action removes a #${id} board`;
   }
