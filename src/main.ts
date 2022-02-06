@@ -28,7 +28,7 @@ async function start() {
       app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
         new FastifyAdapter({
-          logger: true,
+          logger: false,
         }),
       );
     } else {
