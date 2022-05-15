@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:16-alpine AS development
 
 EXPOSE 4000
 
@@ -8,8 +8,7 @@ COPY package*.json ./
 
 RUN npm ci --only=prod && npm cache clean --force
 
-RUN npm install global nodemon
-
+RUN npm install global @nestjs/cli
 
 COPY . .
 
