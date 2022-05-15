@@ -1,0 +1,49 @@
+version: '3.0'
+
+services:
+  nodejs-service:
+    container_name: nodejs-service
+    image: nodejs-service-q4
+    build: .
+    env_file:
+      - .env.development
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - .:/usr/app/src
+      - /usr/app/src/node_modules
+      - ./logs:/usr/logs
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+      - nodejs-service-net
+
+
+  postgres:
+    container_name: db
+    build: ./database
+    image: postgres-service-q4
+    env_file:
+      - .env.development
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - ./database/init/:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - nodejs-service-net
+
+volumes:
+  pgdata:
+networks:
+    nodejs-service-net:
+      driver: bridge

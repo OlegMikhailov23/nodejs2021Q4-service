@@ -1,14 +1,15 @@
-const dotenv = require('dotenv');
-const path = require('path');
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 dotenv.config({
-  path: path.join(__dirname, '../../.env')
+  path: path.join(__dirname, `../../.env.${process.env.NODE_ENV}`),
 });
 
-module.exports = {
-  PORT: process.env.PORT,
-  NODE_ENV: process.env.NODE_ENV,
-  MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
-  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
-  AUTH_MODE: process.env.AUTH_MODE === 'true'
-};
+export const PORT = process.env.PORT;
+export const USE_FASTIFY = process.env.USE_FASTIFY;
+// POSTGRES_PORT: process.env.POSTGRES_PORT,
+// POSTGRES_USER: process.env.POSTGRES_USER,
+// POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
+// POSTGRES_DB: process.env.POSTGRES_DB,
+export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+// AUTH_MODE: process.env.AUTH_MODE === 'true'
